@@ -1,0 +1,183 @@
+/* Message appear animation */
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Typing indicator animation */
+@keyframes typingBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.typing-indicator .dot:nth-child(1) {
+    animation: typingBounce 0.6s 0.1s infinite;
+}
+
+.typing-indicator .dot:nth-child(2) {
+    animation: typingBounce 0.6s 0.2s infinite;
+}
+
+.typing-indicator .dot:nth-child(3) {
+    animation: typingBounce 0.6s 0.3s infinite;
+}
+
+/* Pulse animation for send button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(var(--primary-color-rgb), 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
+    }
+}
+
+#send-button:focus {
+    animation: pulse 1.5s infinite;
+}
+
+/* Fade in animations for container elements */
+.header, .chat-container, .features, .footer {
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.header {
+    animation-delay: 0.1s;
+}
+
+.chat-container {
+    animation-delay: 0.3s;
+}
+
+.features {
+    animation-delay: 0.5s;
+}
+
+.footer {
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating animation for features */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.feature i {
+    animation: float 3s ease-in-out infinite;
+}
+
+.feature:nth-child(1) i {
+    animation-delay: 0s;
+}
+
+.feature:nth-child(2) i {
+    animation-delay: 0.5s;
+}
+
+.feature:nth-child(3) i {
+    animation-delay: 1s;
+}
+
+/* Theme toggle animation */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.theme-toggle.animate i {
+    animation: rotate 0.5s ease;
+}
+
+/* Message written animation for bot messages */
+@keyframes textAppear {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.bot-message.new .message-content p {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: textAppear 1s steps(40, end);
+}
+
+/* Sidebar button hover animation */
+.toggle-sidebar-btn {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-sidebar-btn:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+/* Added animation for modal options */
+.option-card {
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-3px);
+}
+
+.option-card.selected {
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+/* Interest tag hover animation */
+.interest-tag {
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.interest-tag:hover {
+    transform: scale(1.05);
+}
+
+.interest-tag.selected {
+    transform: scale(1.05);
+    background-color: var(--primary-color);
+    color: white;
+}

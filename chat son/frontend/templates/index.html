@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ankara Gezi Uygulaması</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toast.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Sohbetlerim</h2>
+                <button id="new-chat-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Sohbet
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="conversations-list" id="conversations-list">
+                    <!-- Sohbetler buraya JavaScript ile eklenecek -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span>{{ current_user.username }}</span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn btn-icon" title="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
+        <button id="toggle-sidebar" class="toggle-sidebar-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='img/1.jpeg') }}" alt="Logo" class="logo">
+                    <h1 class="app-title">Ankara Gezi Uygulaması</h1>
+                </div>
+
+                <div class="header-controls">
+                    <button class="settings-btn" id="open-preferences-modal" title="Tercihlerini Düzenle">
+                        <i class="fas fa-cog"></i>
+                    </button>
+
+                    <div class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <main class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="welcome-message">
+                        <h2>Ankara'yı Keşfedin! 🌟</h2>
+                        <p>Merhaba, ben kişisel Ankara Gezi Rehberinizim! 🗺️ Tercihlerinize göre özel gezi rotaları oluşturabilirim.</p>
+                        <ul>
+                            <li>🗺️ <strong>Kişiselleştirilmiş Rotalar</strong> - "Yarın Ankara'da ne yapmalıyım?" gibi sorular sorabilirsiniz.</li>
+                            <li>🍽️ <strong>Restoran Önerileri</strong> - "Ankara'da en iyi kebapçılar nerede?" diye sorabilirsiniz.</li>
+                            <li>🏛️ <strong>Turistik Yerler</strong> - "Ankara'da mutlaka görülmesi gereken yerler" diyebilirsiniz.</li>
+                            <li>🎭 <strong>Etkinlik Önerileri</strong> - "Bu hafta sonu Ankara'da hangi etkinlikler var?" diye sorabilirsiniz.</li>
+                            <li>⏱️ <strong>Zaman Kısıtlı Rotalar</strong> - "Ankara'da 3 saatte neler yapabilirim?" şeklinde sorabilirsiniz.</li>
+                        </ul>
+                        <p>Sağ üstteki ⚙️ ayarlar butonundan tercihlerinizi güncelleyerek daha kişiselleştirilmiş öneriler alabilirsiniz!</p>
+                        <p>Ne tür bir Ankara gezi rotası oluşturmamı istersiniz? 🤔</p>
+                    </div>
+                </div>
+
+                <div class="typing-indicator hidden" id="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+
+                <div class="chat-input">
+                    <form id="message-form">
+                        <input type="text" id="user-input" placeholder="Mesajınızı yazın..." autocomplete="off">
+                        <button type="button" id="voice-button" class="btn btn-icon" title="Sesli Mesaj">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button type="submit" id="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- User Preferences Modal -->
+    <div id="preferences-modal" class="modal-overlay modal-hidden">
+        <div class="preferences-modal">
+            <div class="modal-header">
+                <h2>Gezi Tercihleriniz</h2>
+                <button class="close-modal" id="close-preferences-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-content">
+                <!-- Bütçe -->
+                <div class="preference-section">
+                    <h3>Bütçe (ortalama kaç lira harcayabilirsiniz?)</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="budget" data-value="low">
+                            <div class="icon"><i class="fas fa-coins"></i></div>
+                            <div>Düşük (0-500₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="medium">
+                            <div class="icon"><i class="fas fa-money-bill"></i></div>
+                            <div>Orta (500-2000₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="high">
+                            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div>Yüksek (2000₺+)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kişi Sayısı -->
+                <div class="preference-section">
+                    <h3>Kiminle Geziyorsunuz?</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="company" data-value="alone">
+                            <div class="icon"><i class="fas fa-user"></i></div>
+                            <div>Yalnız</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="family">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div>Aile</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="friends">
+                            <div class="icon"><i class="fas fa-user-friends"></i></div>
+                            <div>Arkadaşlar</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="partner">
+                            <div class="icon"><i class="fas fa-heart"></i></div>
+                            <div>Sevgili</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kıyafet Tercihi -->
+                <div class="preference-section">
+                    <h3>Kıyafet Tercihi</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="dress" data-value="casual">
+                            <div class="icon"><i class="fas fa-tshirt"></i></div>
+                            <div>Günlük</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="sport">
+                            <div class="icon"><i class="fas fa-running"></i></div>
+                            <div>Spor</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="elegant">
+                            <div class="icon"><i class="fas fa-user-tie"></i></div>
+                            <div>Şık</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ruh Hali -->
+                <div class="preference-section">
+                    <h3>Mod (Ruh Hali)</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="mood" data-value="energetic">
+                            <div class="icon"><i class="fas fa-bolt"></i></div>
+                            <div>Enerjik</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="tired">
+                            <div class="icon"><i class="fas fa-bed"></i></div>
+                            <div>Yorgun</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="calm">
+                            <div class="icon"><i class="fas fa-smile"></i></div>
+                            <div>Sakin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zaman -->
+                <div class="preference-section">
+                    <h3>Zaman</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="time" data-value="0-3">
+                            <div class="icon"><i class="fas fa-hourglass-start"></i></div>
+                            <div>0-3 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="3-6">
+                            <div class="icon"><i class="fas fa-hourglass-half"></i></div>
+                            <div>3-6 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="6-10">
+                            <div class="icon"><i class="fas fa-hourglass-end"></i></div>
+                            <div>6-10 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="10+">
+                            <div class="icon"><i class="fas fa-hourglass"></i></div>
+                            <div>10+ Saat</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İlgi Alanları -->
+                <div class="preference-section">
+                    <h3>İlgi Alanları (Birden fazla seçebilirsiniz)</h3>
+                    <div class="interest-tags">
+                        <span class="interest-tag" data-interest="food">Yeme & İçme</span>
+                        <span class="interest-tag" data-interest="shopping">Alışveriş</span>
+                        <span class="interest-tag" data-interest="nature">Doğa</span>
+                        <span class="interest-tag" data-interest="sports">Spor</span>
+                        <span class="interest-tag" data-interest="theater">Tiyatro</span>
+                        <span class="interest-tag" data-interest="cinema">Sinema</span>
+                        <span class="interest-tag" data-interest="concert">Konser</span>
+                        <span class="interest-tag" data-interest="museum">Müze</span>
+                        <span class="interest-tag" data-interest="comedy">Komedi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="reset-preferences" class="btn btn-secondary">Sıfırla</button>
+                <button id="save-preferences" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zorunlu Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-overlay hidden">
+        <div class="onboarding-modal">
+            <div class="onboarding-header">
+                <h2>Gezi Tercihlerinizi Belirleyin</h2>
+                <p>Size özel Ankara gezi rotası oluşturabilmemiz için lütfen tercihlerinizi belirtin.</p>
+            </div>
+
+            <div class="onboarding-content">
+                <div class="onboarding-step" data-step="1">
+                    <h3>1. Bütçenizi Belirleyin</h3>
+                    <p>Ne kadar harcamayı planlıyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="budget" data-value="low">
+                            <div class="icon"><i class="fas fa-coins"></i></div>
+                            <div>Düşük (0-500₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="medium">
+                            <div class="icon"><i class="fas fa-money-bill"></i></div>
+                            <div>Orta (500-2000₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="high">
+                            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div>Yüksek (2000₺+)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="2">
+                    <h3>2. Kiminle Geziyorsunuz?</h3>
+                    <p>Kimle birlikte olacaksınız?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="company" data-value="alone">
+                            <div class="icon"><i class="fas fa-user"></i></div>
+                            <div>Yalnız</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="family">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div>Aile</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="friends">
+                            <div class="icon"><i class="fas fa-user-friends"></i></div>
+                            <div>Arkadaşlar</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="partner">
+                            <div class="icon"><i class="fas fa-heart"></i></div>
+                            <div>Sevgili</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="3">
+                    <h3>3. Kıyafet Tercihiniz</h3>
+                    <p>Nasıl giyinmeyi planlıyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="dress" data-value="casual">
+                            <div class="icon"><i class="fas fa-tshirt"></i></div>
+                            <div>Günlük</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="sport">
+                            <div class="icon"><i class="fas fa-running"></i></div>
+                            <div>Spor</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="elegant">
+                            <div class="icon"><i class="fas fa-user-tie"></i></div>
+                            <div>Şık</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="4">
+                    <h3>4. Mod (Ruh Hali)</h3>
+                    <p>Kendinizi nasıl hissediyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="mood" data-value="energetic">
+                            <div class="icon"><i class="fas fa-bolt"></i></div>
+                            <div>Enerjik</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="tired">
+                            <div class="icon"><i class="fas fa-bed"></i></div>
+                            <div>Yorgun</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="calm">
+                            <div class="icon"><i class="fas fa-smile"></i></div>
+                            <div>Sakin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="5">
+                    <h3>5. Gezi İçin Ayırdığınız Zaman</h3>
+                    <p>Ne kadar süre ayırabilirsiniz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="time" data-value="0-3">
+                            <div class="icon"><i class="fas fa-hourglass-start"></i></div>
+                            <div>0-3 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="3-6">
+                            <div class="icon"><i class="fas fa-hourglass-half"></i></div>
+                            <div>3-6 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="6-10">
+                            <div class="icon"><i class="fas fa-hourglass-end"></i></div>
+                            <div>6-10 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="10+">
+                            <div class="icon"><i class="fas fa-hourglass"></i></div>
+                            <div>10+ Saat</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="6">
+                    <h3>6. İlgi Alanlarınız</h3>
+                    <p>İlgilendiğiniz aktiviteleri seçin (birden fazla seçebilirsiniz)</p>
+                    <div class="interest-tags">
+                        <span class="interest-tag" data-interest="food">Yeme & İçme</span>
+                        <span class="interest-tag" data-interest="shopping">Alışveriş</span>
+                        <span class="interest-tag" data-interest="nature">Doğa</span>
+                        <span class="interest-tag" data-interest="sports">Spor</span>
+                        <span class="interest-tag" data-interest="theater">Tiyatro</span>
+                        <span class="interest-tag" data-interest="cinema">Sinema</span>
+                        <span class="interest-tag" data-interest="concert">Konser</span>
+                        <span class="interest-tag" data-interest="museum">Müze</span>
+                        <span class="interest-tag" data-interest="comedy">Komedi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="onboarding-footer">
+                <div class="onboarding-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 16.6%;"></div>
+                    </div>
+                    <div class="progress-text">Adım 1/6</div>
+                </div>
+                <div class="onboarding-buttons">
+                    <button id="prev-step" class="btn btn-secondary" disabled>Geri</button>
+                    <button id="next-step" class="btn btn-primary">İleri</button>
+                    <button id="finish-onboarding" class="btn btn-success hidden">Tamamla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal (dinamik olarak JavaScript ile oluşturulacak) -->
+
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7q7Foqk48QL4xq6XcG99MQaapzidje5Y&callback=Function.prototype"></script>
+    
+    <!-- Application Scripts -->
+    <script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/preferences.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/speech.js') }}"></script>
+
+</body>
+</html>
