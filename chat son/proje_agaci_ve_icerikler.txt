@@ -1,0 +1,5449 @@
+📁 Proje Ağaç Yapısı:
+======================
+├── chat son/
+│   ├── chat.sql
+│   ├── kodlar.py
+│   ├── proje_agaci_ve_icerikler.txt
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── backend/
+│   │   ├── .env
+│   │   ├── app.py
+│   │   ├── config.py
+│   │   ├── chatbot/
+│   │   │   ├── routes.py
+│   │   │   ├── services.py
+│   │   │   ├── utils.py
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__/
+│   │   │   │   ├── routes.cpython-311.pyc
+│   │   │   │   ├── services.cpython-311.pyc
+│   │   │   │   ├── __init__.cpython-311.pyc
+│   │   ├── data/
+│   │   │   ├── etkinlikler.md
+│   │   │   ├── malls_data.md
+│   │   │   ├── museums_data.md
+│   │   │   ├── parks_data.md
+│   │   │   ├── restaurants.md
+│   │   ├── models/
+│   │   │   ├── db.py
+│   │   │   ├── user.py
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__/
+│   │   │   │   ├── db.cpython-311.pyc
+│   │   │   │   ├── user.cpython-311.pyc
+│   │   │   │   ├── __init__.cpython-311.pyc
+│   │   ├── rag/
+│   │   │   ├── data_loader.py
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__/
+│   │   │   │   ├── data_loader.cpython-311.pyc
+│   │   │   │   ├── __init__.cpython-311.pyc
+│   │   ├── __pycache__/
+│   │   │   ├── config.cpython-311.pyc
+│   ├── frontend/
+│   │   ├── static/
+│   │   │   ├── css/
+│   │   │   │   ├── animations.css
+│   │   │   │   ├── auth.css
+│   │   │   │   ├── main.css
+│   │   │   │   ├── maps.css
+│   │   │   │   ├── modal.css
+│   │   │   │   ├── onboarding.css
+│   │   │   │   ├── toast.css
+│   │   │   ├── img/
+│   │   │   │   ├── 1.jpeg
+│   │   │   │   ├── 2.jpeg
+│   │   │   │   ├── 3.jpeg
+│   │   │   │   ├── bot-avatar.svg
+│   │   │   │   ├── logo.svg
+│   │   │   ├── js/
+│   │   │   │   ├── animations.js
+│   │   │   │   ├── api.js
+│   │   │   │   ├── main.js
+│   │   │   │   ├── maps.js
+│   │   │   │   ├── onboarding.js
+│   │   │   │   ├── preferences.js
+│   │   │   │   ├── sidebar.js
+│   │   │   │   ├── speech.js
+│   │   ├── templates/
+│   │   │   ├── index.html
+│   │   │   ├── login.html
+│   │   │   ├── register.html
+
+
+📄 Dosya İçerikleri:
+======================
+
+🗂 Dosya: chat.sql
+------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+🗂 Dosya: kodlar.py
+-------------------
+import os
+
+def write_tree_structure(root_dir, out):
+    out.write("📁 Proje Ağaç Yapısı:\n")
+    out.write("======================\n")
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        level = dirpath.replace(root_dir, "").count(os.sep)
+        indent = "│   " * level
+        folder_name = os.path.basename(dirpath)
+        out.write(f"{indent}├── {folder_name}/\n")
+        for fname in filenames:
+            file_indent = "│   " * (level + 1)
+            out.write(f"{file_indent}├── {fname}\n")
+    out.write("\n\n")
+
+def write_file_contents(root_dir, out, exclude_prefixes=[]):
+    out.write("📄 Dosya İçerikleri:\n")
+    out.write("======================\n")
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        for fname in filenames:
+            file_path = os.path.join(dirpath, fname)
+            relative_path = os.path.relpath(file_path, root_dir)
+            # Eğer dosya, dışlanacak dizinlerden birinin altındaysa atla
+            if any(relative_path.replace("\\", "/").startswith(prefix) for prefix in exclude_prefixes):
+                continue
+            out.write(f"\n🗂 Dosya: {relative_path}\n")
+            out.write(f"{'-' * (len(relative_path) + 10)}\n")
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    if not lines:
+                        out.write("  (boş dosya)\n")
+                    for line in lines:
+                        out.write(f"{line.rstrip()}\n")
+            except Exception as e:
+                out.write(f"[!] Dosya okunamadı: {e}\n")
+
+def write_tree_with_contents_separated(root_dir, output_file):
+    with open(output_file, "w", encoding="utf-8") as out:
+        write_tree_structure(root_dir, out)
+        # "backend/data" dizini altındaki dosyaların içeriğini yazma
+        exclude_prefixes = ["backend/data"]
+        write_file_contents(root_dir, out, exclude_prefixes=exclude_prefixes)
+
+# Kullanım
+if __name__ == "__main__":
+    root_dir = "C:/Users/Kotil/Desktop/chat son"  # Proje kök dizinini buraya yaz
+    output_file = "proje_agaci_ve_icerikler.txt"
+    write_tree_with_contents_separated(root_dir, output_file)
+    print(f"\nProje ağaç yapısı ve içerikler '{output_file}' dosyasına yazıldı.")
+
+🗂 Dosya: proje_agaci_ve_icerikler.txt
+--------------------------------------
+  (boş dosya)
+
+🗂 Dosya: README.md
+-------------------
+  (boş dosya)
+
+🗂 Dosya: requirements.txt
+--------------------------
+flask==2.3.3
+flask-cors==4.0.0
+python-dotenv==1.0.0
+langchain==0.1.0
+langchain-openai==0.0.5
+openai==1.5.0
+pyodbc==4.0.39
+flask-login==0.6.2
+werkzeug==2.3.7
+python-jose==3.3.0
+passlib==1.7.4
+faiss-cpu==1.7.4
+markdown==3.5
+langchain_community==0.0.10
+faiss-cpu==1.7.4
+
+🗂 Dosya: backend\.env
+----------------------
+SECRET_KEY=your_secret_key_here
+OPENAI_API_KEY=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
+MODEL_NAME=gpt-4o
+TEMPERATURE=0.7
+MAX_TOKENS=1024
+DEBUG=True
+RAG_ENABLED=True
+
+# Database settings
+DB_SERVER=DESKTOP-NP2FEIB
+DB_NAME=chat
+DB_USER=sa
+DB_PASSWORD=Qwer1234
+
+🗂 Dosya: backend\app.py
+------------------------
+from flask import Flask, redirect, url_for, render_template, request, flash, jsonify
+from flask_login import LoginManager, login_required, current_user, login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import pyodbc
+from config import Config
+from chatbot.routes import chatbot_bp
+from models.user import User
+from models.db import get_db_connection
+
+def create_app(config_class=Config):
+    """Create and configure the Flask application."""
+    app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
+    app.config.from_object(config_class)
+
+    # Initialize Flask-Login
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Users WHERE UserID = ?", (user_id,))
+        user_data = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user_data:
+            return User(
+                id=user_data.UserID,
+                username=user_data.Username,
+                email=user_data.Email,
+                password_hash=user_data.PasswordHash
+            )
+        return None
+
+    # Register blueprints
+    app.register_blueprint(chatbot_bp)
+
+    # Routes
+    @app.route('/')
+    def index():
+        if current_user.is_authenticated:
+            return render_template('index.html')
+        return redirect(url_for('login'))
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+
+        if request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
+            user_data = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if user_data and check_password_hash(user_data.PasswordHash, password):
+                user = User(
+                    id=user_data.UserID,
+                    username=user_data.Username,
+                    email=user_data.Email,
+                    password_hash=user_data.PasswordHash
+                )
+                login_user(user)
+
+                # Update last login date
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute("UPDATE Users SET LastLoginDate = GETDATE() WHERE UserID = ?", (user.id,))
+                conn.commit()
+                cursor.close()
+                conn.close()
+
+                return redirect(url_for('index'))
+
+            flash('Geçersiz kullanıcı adı veya şifre')
+
+        return render_template('login.html')
+
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+
+        if request.method == 'POST':
+            username = request.form.get('username')
+            email = request.form.get('email')
+            password = request.form.get('password')
+
+            # Check if username or email already exists
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM Users WHERE Username = ? OR Email = ?", (username, email))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                flash('Kullanıcı adı veya email zaten kullanılıyor')
+                cursor.close()
+                conn.close()
+                return render_template('register.html')
+
+            # Create new user
+            hashed_password = generate_password_hash(password)
+            cursor.execute(
+                "INSERT INTO Users (Username, Email, PasswordHash) VALUES (?, ?, ?)",
+                (username, email, hashed_password)
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            flash('Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.')
+            return redirect(url_for('login'))
+
+        return render_template('register.html')
+
+    @app.route('/logout')
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('login'))
+
+    @app.route('/api/conversations')
+    @login_required
+    def get_conversations():
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT ConversationID, ConversationName, StartDate, LastUpdateDate
+            FROM Conversations
+            WHERE UserID = ?
+            ORDER BY LastUpdateDate DESC
+        """, (current_user.id,))
+
+        conversations = []
+        for row in cursor.fetchall():
+            conversations.append({
+                'id': row.ConversationID,
+                'name': row.ConversationName,
+                'date': row.StartDate.strftime('%Y-%m-%d %H:%M')
+            })
+
+        cursor.close()
+        conn.close()
+        return jsonify(conversations)
+    @app.route('/api/user/preferences', methods=['GET', 'POST'])
+    @login_required
+    def user_preferences():
+        """Handle user preferences."""
+        if request.method == 'GET':
+            # Get preferences from database
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT Budget, Company, Dress, Mood, TimePreference, Interests FROM UserPreferences WHERE UserID = ?",
+                (current_user.id,)
+            )
+
+            preferences = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if preferences:
+                # Convert interests string to list
+                interests = preferences.Interests.split(',') if preferences.Interests else []
+
+                return jsonify({
+                    'budget': preferences.Budget,
+                    'company': preferences.Company,
+                    'dress': preferences.Dress,
+                    'mood': preferences.Mood,
+                    'time': preferences.TimePreference,
+                    'interests': interests
+                })
+
+            return jsonify({})
+
+        elif request.method == 'POST':
+            data = request.get_json()
+
+            if not data:
+                return jsonify({'error': 'No data provided'}), 400
+
+            # Extract preferences
+            budget = data.get('budget')
+            company = data.get('company')
+            dress = data.get('dress')
+            mood = data.get('mood')
+            time_preference = data.get('time')
+            interests = ','.join(data.get('interests', []))
+
+            # Save to database
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            # Check if user already has preferences
+            cursor.execute(
+                "SELECT COUNT(*) AS count FROM UserPreferences WHERE UserID = ?",
+                (current_user.id,)
+            )
+            count = cursor.fetchone().count
+
+            if count > 0:
+                # Update existing preferences
+                cursor.execute(
+                    """
+                    UPDATE UserPreferences
+                    SET Budget = ?, Company = ?, Dress = ?, Mood = ?, TimePreference = ?,
+                    Interests = ?, UpdatedDate = GETDATE()
+                    WHERE UserID = ?
+                    """,
+                    (budget, company, dress, mood, time_preference, interests, current_user.id)
+                )
+            else:
+                # Insert new preferences
+                cursor.execute(
+                    """
+                    INSERT INTO UserPreferences
+                    (UserID, Budget, Company, Dress, Mood, TimePreference, Interests)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (current_user.id, budget, company, dress, mood, time_preference, interests)
+                )
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return jsonify({'success': True})
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(host='0.0.0.0', port=5000, debug=app.config['DEBUG'])
+
+🗂 Dosya: backend\config.py
+---------------------------
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
+
+class Config:
+    """Configuration settings for the application."""
+
+    # Flask settings
+    SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
+    DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
+    # OpenAI settings
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+    # LLM settings
+    MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-4o')
+    TEMPERATURE = float(os.getenv('TEMPERATURE', '0.7'))
+    MAX_TOKENS = int(os.getenv('MAX_TOKENS', '1024'))
+
+    # Database settings
+    DB_SERVER = os.getenv('DB_SERVER', 'localhost')
+    DB_NAME = os.getenv('DB_NAME', 'AnkaraGezi')
+    DB_USER = os.getenv('DB_USER', 'sa')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+
+    # Connection string
+    DB_CONNECTION_STRING = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_SERVER};DATABASE={DB_NAME};UID={DB_USER};PWD={DB_PASSWORD}"
+
+    # RAG settings
+    RAG_ENABLED = os.getenv('RAG_ENABLED', 'True').lower() == 'true'
+    RAG_DATA_DIR = os.getenv('RAG_DATA_DIR', 'data')
+
+🗂 Dosya: backend\chatbot\routes.py
+-----------------------------------
+from flask import Blueprint, request, jsonify, current_app
+from flask_login import login_required, current_user
+from chatbot.services import ChatbotService
+from models.db import get_db_connection
+from models.user import User
+import logging
+import datetime
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create blueprint
+chatbot_bp = Blueprint('chatbot', __name__, url_prefix='/api')
+
+# Initialize chatbot service
+chatbot_service = ChatbotService()
+
+@chatbot_bp.route('/chat', methods=['POST'])
+@login_required
+def chat():
+    """
+    Chat endpoint that processes user messages and returns AI responses.
+
+    Expected JSON payload:
+    {
+        "message": "User message here",
+        "conversation_id": "optional-conversation-id"
+    }
+    """
+    try:
+        data = request.get_json()
+
+        if not data or 'message' not in data:
+            return jsonify({'error': 'Message is required'}), 400
+
+        user_message = data['message']
+        conversation_id = data.get('conversation_id')
+
+        # Log incoming message
+        logger.info(f"Received message: {user_message[:50]}{'...' if len(user_message) > 50 else ''}")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Create a new conversation if none exists
+        if not conversation_id:
+            cursor.execute(
+                "INSERT INTO Conversations (UserID, ConversationName, StartDate, LastUpdateDate) VALUES (?, ?, GETDATE(), GETDATE())",
+                (current_user.id, "Ankara Gezi Sohbeti")
+            )
+            conn.commit()
+            cursor.execute("SELECT @@IDENTITY AS ID")
+            conversation_id = cursor.fetchone()[0]
+        else:
+            # Update last update date for the conversation
+            cursor.execute(
+                "UPDATE Conversations SET LastUpdateDate = GETDATE() WHERE ConversationID = ? AND UserID = ?",
+                (conversation_id, current_user.id)
+            )
+            conn.commit()
+
+        # Store user message
+        cursor.execute(
+            "INSERT INTO Messages (ConversationID, UserID, IsUserMessage, MessageContent) VALUES (?, ?, 1, ?)",
+            (conversation_id, current_user.id, user_message)
+        )
+        conn.commit()
+
+        # Process message with chatbot service
+        response = chatbot_service.process_message(user_message, str(conversation_id))
+
+        # Store bot response
+        cursor.execute(
+            "INSERT INTO Messages (ConversationID, UserID, IsUserMessage, MessageContent) VALUES (?, ?, 0, ?)",
+            (conversation_id, current_user.id, response)
+        )
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        # Return response
+        return jsonify({
+            'response': response,
+            'conversation_id': conversation_id
+        })
+
+    except Exception as e:
+        logger.error(f"Error processing message: {str(e)}")
+        return jsonify({'error': 'An error occurred processing your request'}), 500
+
+@chatbot_bp.route('/conversation/<int:conversation_id>', methods=['GET'])
+@login_required
+def get_conversation_history(conversation_id):
+    """Get the messages for a specific conversation."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if conversation belongs to user
+        cursor.execute(
+            "SELECT * FROM Conversations WHERE ConversationID = ? AND UserID = ?",
+            (conversation_id, current_user.id)
+        )
+
+        if not cursor.fetchone():
+            return jsonify({'error': 'Conversation not found'}), 404
+
+        # Get messages
+        cursor.execute(
+            """
+            SELECT MessageID, IsUserMessage, MessageContent, SentDate
+            FROM Messages
+            WHERE ConversationID = ?
+            ORDER BY SentDate ASC
+            """,
+            (conversation_id,)
+        )
+
+        messages = []
+        for row in cursor.fetchall():
+            messages.append({
+                'id': row.MessageID,
+                'is_user': bool(row.IsUserMessage),
+                'content': row.MessageContent,
+                'time': row.SentDate.strftime('%H:%M')
+            })
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(messages)
+
+    except Exception as e:
+        logger.error(f"Error getting conversation history: {str(e)}")
+        return jsonify({'error': 'An error occurred getting the conversation history'}), 500
+
+@chatbot_bp.route('/conversation/<int:conversation_id>', methods=['PUT'])
+@login_required
+def update_conversation(conversation_id):
+    """Update conversation name."""
+    try:
+        data = request.get_json()
+
+        if not data or 'name' not in data:
+            return jsonify({'error': 'Conversation name is required'}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if conversation belongs to user
+        cursor.execute(
+            "SELECT * FROM Conversations WHERE ConversationID = ? AND UserID = ?",
+            (conversation_id, current_user.id)
+        )
+
+        if not cursor.fetchone():
+            return jsonify({'error': 'Conversation not found'}), 404
+
+        # Update conversation name
+        cursor.execute(
+            "UPDATE Conversations SET ConversationName = ? WHERE ConversationID = ?",
+            (data['name'], conversation_id)
+        )
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        logger.error(f"Error updating conversation: {str(e)}")
+        return jsonify({'error': 'An error occurred updating the conversation'}), 500
+
+@chatbot_bp.route('/conversation/<int:conversation_id>', methods=['DELETE'])
+@login_required
+def delete_conversation(conversation_id):
+    """Delete a conversation and its messages."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if conversation belongs to user
+        cursor.execute(
+            "SELECT * FROM Conversations WHERE ConversationID = ? AND UserID = ?",
+            (conversation_id, current_user.id)
+        )
+
+        if not cursor.fetchone():
+            return jsonify({'error': 'Conversation not found'}), 404
+
+        # Delete messages first (foreign key constraint)
+        cursor.execute(
+            "DELETE FROM Messages WHERE ConversationID = ?",
+            (conversation_id,)
+        )
+
+        # Delete conversation
+        cursor.execute(
+            "DELETE FROM Conversations WHERE ConversationID = ?",
+            (conversation_id,)
+        )
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        logger.error(f"Error deleting conversation: {str(e)}")
+        return jsonify({'error': 'An error occurred deleting the conversation'}), 500
+
+🗂 Dosya: backend\chatbot\services.py
+-------------------------------------
+from flask import current_app
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain.chains import LLMChain
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.schema import SystemMessage
+import uuid
+import os
+import sys
+import datetime
+import flask_login
+from models.db import get_db_connection
+
+class ChatbotService:
+    """Service for handling chatbot interactions using LangChain and RAG."""
+
+    def __init__(self):
+        """Initialize the chatbot service with LangChain components."""
+        self.conversations = {}
+
+        # RAG sistemini başlat
+        self.data_loader = None
+        self._init_rag_system()
+
+    def _init_rag_system(self):
+        """RAG sistemini başlat ve veri dosyalarını yükle"""
+        try:
+            from rag.data_loader import AnkaraDataLoader
+
+            api_key = os.getenv('OPENAI_API_KEY') or current_app.config['OPENAI_API_KEY']
+
+            # Proje kök dizinini bul
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            backend_dir = os.path.dirname(script_dir)
+            data_dir = os.path.join(backend_dir, "data")
+
+            print(f"[CHATBOT] RAG sistemi başlatılıyor...")
+            print(f"[CHATBOT] Veri dizini: {data_dir}")
+
+            # Dizinde md dosyaları var mı kontrol et
+            if os.path.exists(data_dir):
+                files = [f for f in os.listdir(data_dir) if f.endswith('.md')]
+                print(f"[CHATBOT] Veri dizinindeki dosyalar: {files}")
+            else:
+                print(f"[CHATBOT] UYARI: {data_dir} dizini bulunamadı!")
+                # Dizini oluştur
+                os.makedirs(data_dir, exist_ok=True)
+                print(f"[CHATBOT] {data_dir} dizini oluşturuldu.")
+
+            # OpenAI Embeddings modülünü oluştur
+            self.embeddings = OpenAIEmbeddings(api_key=api_key)
+            print("[CHATBOT] OpenAI Embeddings modeli başarıyla yüklendi.")
+
+            self.data_loader = AnkaraDataLoader(api_key=api_key, data_dir=data_dir)
+            self.data_loader.load_and_index_all()
+            print("[CHATBOT] RAG sistemi başarıyla başlatıldı.")
+        except Exception as e:
+            print(f"[CHATBOT] RAG sistemi başlatılırken hata oluştu: {str(e)}")
+            print(f"[CHATBOT] Hata detayı: {sys.exc_info()}")
+            # Hata olsa bile devam et, sadece RAG olmadan çalışacak
+
+    def _get_llm(self):
+        """Get the language model."""
+        model_name = current_app.config.get('MODEL_NAME', 'gpt-4o')
+        print(f"[CHATBOT] Model yükleniyor: {model_name}")
+
+        return ChatOpenAI(
+            api_key=current_app.config['OPENAI_API_KEY'],
+            model_name=model_name,
+            temperature=current_app.config['TEMPERATURE'],
+            max_tokens=current_app.config['MAX_TOKENS']
+        )
+
+    def _get_conversation_chain(self, conversation_id=None):
+        """
+        Get or create a conversation chain for the given conversation ID.
+
+        Args:
+            conversation_id: Optional ID for the conversation
+
+        Returns:
+            LLMChain and the conversation_id
+        """
+        # Create a new conversation ID if none is provided
+        if not conversation_id:
+            conversation_id = str(uuid.uuid4())
+            print(f"[CHATBOT] Yeni konuşma ID oluşturuldu: {conversation_id}")
+
+        # Create a new conversation chain if it doesn't exist
+        if conversation_id not in self.conversations:
+            print(f"[CHATBOT] {conversation_id} ID'li konuşma zinciri oluşturuluyor...")
+
+            # Create a conversation memory
+            memory = ConversationBufferMemory()
+
+            # Güncel tarihi hazırla
+            current_date = datetime.datetime.now().strftime("%d %B %Y")
+
+            # Sistem mesajı oluştur
+            system_template = f"""
+    Sen Ankara şehri hakkında uzman bir gezi rehberisin. Kullanıcıların kişisel tercihlerine göre
+    özelleştirilmiş gezi rotaları hazırlıyorsun. Cevaplarında her zaman nazik, bilgilendirici
+    ve yardımcı olmaya çalış.
+
+    Bugünün tarihi: {current_date}
+
+    BİLGİ KAYNAKLARIN:
+    - Ankara'daki popüler restoranlar
+    - Ankara'daki parklar ve yeşil alanlar
+    - Ankara'daki müzeler ve tarihi yerler
+    - Ankara'daki alışveriş merkezleri
+    - Ankara'daki güncel ve yaklaşan etkinlikler
+
+    KULLANICI TERCİHLERİNİ DİKKATE ALARAK ROTA OLUŞTUR:
+    - Bütçe: Kullanıcının belirttiği bütçeye göre mekanlar öner
+    - Kiminle geziyor: Tek başına, aile, arkadaşlar veya sevgili ile gezilecek yerler öner
+    - Kıyafet tercihi: Spor, şık veya günlük kıyafete uygun mekanlar öner
+    - Ruh hali: Enerjik, yorgun veya sakin ruh haline uygun aktiviteler öner
+    - Zaman: Kullanıcının belirttiği saat aralığına uygun bir rota planla
+    - İlgi alanları: Yeme-içme, alışveriş, doğa, spor, tiyatro, sinema, konser, müze, komedi gibi tercihlere uygun yerler öner
+
+    ROTA OLUŞTURMA KURALLARI:
+    1. Veritabanımızdaki güncel bilgilere dayanarak cevap ver
+    2. Kullanıcı tercihlerine uygun rotalar oluştur
+    3. Rotaları zaman çizelgesi şeklinde düzenle (ör: 10:00 - X Müzesi, 12:30 - Y Restoranı...)
+    4. Her mekân için kısa bir açıklama, adres ve varsa ücret bilgisi ekle
+    5. Farklı aktivite türleri içeren dengeli rotalar oluştur
+    6. Zamanı ve uzaklıkları dikkate alarak gerçekçi rotalar planla
+
+    Eğer kullanıcının tercihi belirtilmemişse, genel öneriler sunarken esnek ol.
+    Sorular sorarak kullanıcının tercihlerini öğrenmeye çalış.
+    cevapları verirken ** kelime **  şeklinde yazma * sembolunu kesinlikle kullanma dümdüz yazıyı yaz.
+    """
+
+
+            # Prompt şablonu oluştur
+            prompt_template = PromptTemplate(
+                input_variables=["history", "input"],
+                template="{history}\nİnsan: {input}\nAI Asistan:"
+            )
+
+            # LLMChain oluştur
+            llm = self._get_llm()
+            chain = LLMChain(
+                llm=llm,
+                prompt=prompt_template,
+                verbose=True,
+                memory=memory,
+            )
+
+            # İlk sistem mesajını belleğe ekle
+            memory.chat_memory.add_message(SystemMessage(content=system_template))
+
+            self.conversations[conversation_id] = chain
+            print(f"[CHATBOT] {conversation_id} ID'li konuşma zinciri oluşturuldu")
+
+        return self.conversations[conversation_id], conversation_id
+
+    def process_message(self, message, conversation_id=None):
+        """
+        Process a user message and return the AI response.
+
+        Args:
+            message: The user's message
+            conversation_id: Optional ID for the conversation
+
+        Returns:
+            AI response text
+        """
+        print(f"[CHATBOT] İşlenen mesaj: {message}")
+
+        # Get or create the conversation chain
+        chain, conversation_id = self._get_conversation_chain(conversation_id)
+
+        # Kullanıcı tercihlerini al
+        user_preferences = self._get_user_preferences()
+
+        # Eğer RAG etkinse ve yüklendiyse, sorgu yap
+        rag_context = ""
+        retrieved_data = None
+
+        if self.data_loader:
+            try:
+                print("[CHATBOT] RAG araması yapılıyor...")
+                # Her kategoriden en az 2 sonuç al
+                search_results = self.data_loader.search(message, k=2)
+
+                if search_results:
+                    retrieved_data = {}
+                    rag_context = "\n\n### VERİTABANI SONUÇLARI ###\n\n"
+
+                    for category, results in search_results.items():
+                        if results:
+                            retrieved_data[category] = [doc.page_content for doc in results[:2]]
+                            rag_context += f"--- {category.upper()} BİLGİLERİ ---\n"
+                            for i, doc in enumerate(results[:2], 1):
+                                rag_context += f"{i}. {doc.page_content}\n\n"
+
+                    print(f"[CHATBOT] RAG sonuçları bulundu: {len(search_results)} kategoride")
+                else:
+                    print("[CHATBOT] RAG aramasında hiç sonuç bulunamadı.")
+            except Exception as e:
+                print(f"[CHATBOT] RAG araması sırasında hata: {str(e)}")
+        else:
+            print("[CHATBOT] RAG sistemi aktif değil, normal modda yanıt veriliyor.")
+
+        try:
+            # Kullanıcı tercihleri varsa eklenti hazırla
+            preferences_context = ""
+            if user_preferences:
+                preferences_context = "\n\n### KULLANICI TERCİHLERİ ###\n"
+
+                if user_preferences.get('budget'):
+                    budget_map = {
+                        'low': 'Düşük (0-500₺)',
+                        'medium': 'Orta (500-2000₺)',
+                        'high': 'Yüksek (2000₺+)'
+                    }
+                    preferences_context += f"Bütçe: {budget_map.get(user_preferences['budget'], user_preferences['budget'])}\n"
+
+                if user_preferences.get('company'):
+                    company_map = {
+                        'alone': 'Yalnız',
+                        'family': 'Aile',
+                        'friends': 'Arkadaşlar',
+                        'partner': 'Sevgili'
+                    }
+                    preferences_context += f"Refakatçi: {company_map.get(user_preferences['company'], user_preferences['company'])}\n"
+
+                if user_preferences.get('dress'):
+                    dress_map = {
+                        'casual': 'Günlük',
+                        'sport': 'Spor',
+                        'elegant': 'Şık'
+                    }
+                    preferences_context += f"Kıyafet Tercihi: {dress_map.get(user_preferences['dress'], user_preferences['dress'])}\n"
+
+                if user_preferences.get('mood'):
+                    mood_map = {
+                        'energetic': 'Enerjik',
+                        'tired': 'Yorgun',
+                        'calm': 'Sakin'
+                    }
+                    preferences_context += f"Ruh Hali: {mood_map.get(user_preferences['mood'], user_preferences['mood'])}\n"
+
+                if user_preferences.get('time'):
+                    preferences_context += f"Zaman: {user_preferences['time']} Saat\n"
+
+                if user_preferences.get('interests') and len(user_preferences['interests']) > 0:
+                    interest_map = {
+                        'food': 'Yeme & İçme',
+                        'shopping': 'Alışveriş',
+                        'nature': 'Doğa',
+                        'sports': 'Spor',
+                        'theater': 'Tiyatro',
+                        'cinema': 'Sinema',
+                        'concert': 'Konser',
+                        'museum': 'Müze',
+                        'comedy': 'Komedi'
+                    }
+                    interests_str = ', '.join([interest_map.get(i, i) for i in user_preferences['interests']])
+                    preferences_context += f"İlgi Alanları: {interests_str}\n"
+            preferences_context += "\nYukarıdaki bilgilere dayanarak, kullanıcı için ideal bir Ankara gezi rotası oluştur. Rota, saat-aktivite şeklinde düzenlenmeli ve kullanıcının tercihlerine uygun mekanlar içermelidir."
+
+            # İki farklı strateji uygula: RAG verileriyle zenginleştirilmiş ve RAG olmadan
+            if rag_context or preferences_context:
+                print("[CHATBOT] Zenginleştirilmiş yanıt oluşturuluyor...")
+                # Tüm bağlamı birleştir
+                context = ""
+                if rag_context:
+                    context += rag_context
+                if preferences_context:
+                    context += preferences_context
+
+                # RAG bağlamını mesaja ekle
+                enhanced_message = f"{message}\n\n{context}"
+
+                # Process the message through the chain
+                response = chain.predict(input=enhanced_message)
+            else:
+                print("[CHATBOT] Normal yanıt oluşturuluyor (RAG verisi yok)...")
+                # Normal mesajı işle
+                response = chain.predict(input=message)
+
+            print(f"[CHATBOT] Yanıt oluşturuldu (uzunluk: {len(response)})")
+            return response
+
+        except Exception as e:
+            print(f"[CHATBOT] Yanıt oluşturulurken hata: {str(e)}")
+            return "Üzgünüm, yanıtınızı oluştururken bir hata oluştu. Lütfen tekrar deneyin."
+
+    def _get_user_preferences(self):
+        """Kullanıcı tercihlerini veritabanından al."""
+        try:
+            user_id = flask_login.current_user.id
+
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT Budget, Company, Dress, Mood, TimePreference, Interests FROM UserPreferences WHERE UserID = ?",
+                (user_id,)
+            )
+
+            preferences = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if preferences:
+                # Convert interests string to list
+                interests = preferences.Interests.split(',') if preferences.Interests else []
+
+                return {
+                    'budget': preferences.Budget,
+                    'company': preferences.Company,
+                    'dress': preferences.Dress,
+                    'mood': preferences.Mood,
+                    'time': preferences.TimePreference,
+                    'interests': interests
+                }
+
+            return None
+        except Exception as e:
+            print(f"[CHATBOT] Kullanıcı tercihleri alınırken hata: {str(e)}")
+            return None
+
+🗂 Dosya: backend\chatbot\utils.py
+----------------------------------
+import re
+import time
+
+def sanitize_input(text):
+    """
+    Sanitize the input text to prevent injection attacks.
+
+    Args:
+        text: Input text to sanitize
+
+    Returns:
+        Sanitized text
+    """
+    # Remove any potential script tags
+    text = re.sub(r'<script.*?>.*?</script>', '', text, flags=re.DOTALL)
+
+    # Remove other potentially dangerous HTML tags
+    text = re.sub(r'<.*?>', '', text)
+
+    return text
+
+def calculate_response_time(start_time):
+    """
+    Calculate the response time in milliseconds.
+
+    Args:
+        start_time: Start time in seconds
+
+    Returns:
+        Response time in milliseconds
+    """
+    return round((time.time() - start_time) * 1000)
+
+🗂 Dosya: backend\chatbot\__init__.py
+-------------------------------------
+  (boş dosya)
+
+🗂 Dosya: backend\chatbot\__pycache__\routes.cpython-311.pyc
+------------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\chatbot\__pycache__\services.cpython-311.pyc
+--------------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\chatbot\__pycache__\__init__.cpython-311.pyc
+--------------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\models\db.py
+------------------------------
+import pyodbc
+from flask import current_app
+
+def get_db_connection():
+    """Creates a connection to the MS SQL database."""
+    conn = pyodbc.connect(current_app.config['DB_CONNECTION_STRING'])
+    return conn
+
+🗂 Dosya: backend\models\user.py
+--------------------------------
+from flask_login import UserMixin
+
+class User(UserMixin):
+    """User model for Flask-Login."""
+
+    def __init__(self, id, username, email, password_hash):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.password_hash = password_hash
+
+🗂 Dosya: backend\models\__init__.py
+------------------------------------
+  (boş dosya)
+
+🗂 Dosya: backend\models\__pycache__\db.cpython-311.pyc
+-------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\models\__pycache__\user.cpython-311.pyc
+---------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\models\__pycache__\__init__.cpython-311.pyc
+-------------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\rag\data_loader.py
+------------------------------------
+import os
+import re
+import json
+from typing import Dict, List, Any
+import markdown
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+from langchain.docstore.document import Document
+
+class AnkaraDataLoader:
+    """Veri dosyalarını yükleyip indeksleme işlemini yönetir."""
+
+    def __init__(self, api_key, data_dir="data"):
+        """
+        Args:
+            api_key: OpenAI API anahtarı
+            data_dir: Markdown dosyalarının bulunduğu dizin
+        """
+        self.api_key = api_key
+        self.data_dir = data_dir
+        print(f"[RAG] Veri dizini: {data_dir}")
+
+        self.embeddings = OpenAIEmbeddings(
+        api_key=api_key,
+        model="text-embedding-ada-002",  # En güncel embedding modeli
+        show_progress_bar=True  # İşlem sırasında ilerleme çubuğu göster
+    )
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=100
+        )
+        self.vectorstores = {}
+
+    def load_and_index_all(self):
+        """Tüm veri dosyalarını yükle ve indeksle."""
+        file_types = {
+            "restaurants": "restaurants.md",
+            "parks": "parks_data.md",
+            "museums": "museums_data.md",
+            "malls": "malls_data.md",
+            "events": "etkinlikler.md"
+        }
+
+        print(f"[RAG] Veri dosyaları yükleniyor... Dosya sayısı: {len(file_types)}")
+
+        for category, filename in file_types.items():
+            print(f"[RAG] {category.upper()} verileri yükleniyor: {filename}")
+            self.load_and_index_file(category, filename)
+
+        print("[RAG] Tüm veriler başarıyla yüklendi ve indekslendi.")
+        print(f"[RAG] Toplam kategori sayısı: {len(self.vectorstores)}")
+        for category, store in self.vectorstores.items():
+            try:
+                doc_count = len(store.docstore._dict)
+                print(f"[RAG] {category.capitalize()}: {doc_count} belge")
+            except:
+                print(f"[RAG] {category.capitalize()}: Belge sayısı belirlenemedi")
+
+    def load_and_index_file(self, category, filename):
+        """Belirli bir kategori için veri dosyasını yükle ve indeksle."""
+        filepath = os.path.join(self.data_dir, filename)
+
+        if not os.path.exists(filepath):
+            print(f"[RAG] UYARI: {filepath} dosyası bulunamadı!")
+            return
+
+        with open(filepath, 'r', encoding='utf-8') as file:
+            content = file.read()
+            print(f"[RAG] {category} dosyası okundu: {len(content)} karakter")
+
+        # Markdown'ı düz metne dönüştür
+        html = markdown.markdown(content)
+        text = re.sub(r'<[^>]*>', '', html)
+
+        # İçeriği parse et ve yapılandırılmış veri oluştur
+        documents = self._parse_content(text, category)
+        print(f"[RAG] {category.capitalize()} için {len(documents)} belge oluşturuldu")
+
+        if not documents:
+            print(f"[RAG] UYARI: {category} için hiç belge oluşturulamadı!")
+            return
+
+        # Belgeleri indeksle
+        print(f"[RAG] {category.capitalize()} verileri indeksleniyor...")
+        self.vectorstores[category] = FAISS.from_documents(
+            documents,
+            self.embeddings
+        )
+
+        print(f"[RAG] {category.capitalize()} verileri başarıyla indekslendi!")
+
+        # Örnek belge göster
+        if documents:
+            print(f"[RAG] {category.capitalize()} örnek belge içeriği: {documents[0].page_content[:150]}...")
+
+    def _parse_content(self, text, category):
+        """İçeriği parse edip belge listesi oluşturur."""
+        documents = []
+
+        # Kategori türüne göre farklı ayrıştırma stratejileri uygula
+        if category == "restaurants":
+            items = re.split(r'## ', text)[1:]  # İlk başlığı atla
+            for item in items:
+                parts = item.strip().split('\n')
+                name = parts[0].strip()
+                metadata = {}
+
+                for line in parts[1:]:
+                    if ":**" in line:
+                        key, value = line.split(":**")
+                        key = key.replace("- **", "").strip()
+                        metadata[key] = value.strip()
+
+                content = f"""Ankara'da {name} adlı restoran hakkında bilgi:
+Adres: {metadata.get('address', 'Belirtilmemiş')}
+Bölge: {metadata.get('district', 'Belirtilmemiş')}
+Fiyat Seviyesi: {metadata.get('price_level', 'Belirtilmemiş')}
+Puan: {metadata.get('rating', 'Belirtilmemiş')}
+"""
+
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "name": name,
+                        "category": "restaurant",
+                        "location": {"lat": metadata.get("lat", ""), "lng": metadata.get("lng", "")}
+                    }
+                )
+                documents.append(doc)
+
+        elif category == "parks":
+            items = re.split(r'## ', text)[1:]
+            for item in items:
+                parts = item.strip().split('\n')
+                name = parts[0].strip()
+                metadata = {}
+
+                for line in parts[1:]:
+                    if ":**" in line:
+                        key, value = line.split(":**")
+                        key = key.replace("**", "").strip()
+                        metadata[key] = value.strip()
+
+                content = f"""Ankara'da {name} adlı park hakkında bilgi:
+Puan: {metadata.get('rating', 'Belirtilmemiş')}
+Değerlendirme Sayısı: {metadata.get('user_ratings_total', 'Belirtilmemiş')}
+"""
+
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "name": name,
+                        "category": "park",
+                        "location": {"lat": metadata.get("latitude", ""), "lng": metadata.get("longitude", "")}
+                    }
+                )
+                documents.append(doc)
+
+        elif category == "museums":
+            items = re.split(r'## ', text)[1:]
+            for item in items:
+                parts = item.strip().split('\n')
+                name = parts[0].strip()
+                metadata = {}
+
+                for line in parts[1:]:
+                    if ":**" in line:
+                        key, value = line.split(":**")
+                        key = key.replace("**", "").strip()
+                        metadata[key] = value.strip()
+
+                content = f"""Ankara'da {name} adlı müze hakkında bilgi:
+Puan: {metadata.get('rating', 'Belirtilmemiş')}
+Giriş Ücreti: {metadata.get('ticket_price', 'Belirtilmemiş')}
+"""
+
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "name": name,
+                        "category": "museum",
+                        "location": {"lat": metadata.get("latitude", ""), "lng": metadata.get("longitude", "")}
+                    }
+                )
+                documents.append(doc)
+
+        elif category == "malls":
+            items = re.split(r'## ', text)[1:]
+            for item in items:
+                parts = item.strip().split('\n')
+                name = parts[0].strip()
+                metadata = {}
+
+                for line in parts[1:]:
+                    if ":**" in line:
+                        key, value = line.split(":**")
+                        key = key.replace("**", "").strip()
+                        metadata[key] = value.strip()
+
+                content = f"""Ankara'da {name} adlı AVM hakkında bilgi:
+Adres: {metadata.get('address', 'Belirtilmemiş')}
+Puan: {metadata.get('rating', 'Belirtilmemiş')}
+Değerlendirme Sayısı: {metadata.get('user_ratings_total', 'Belirtilmemiş')}
+"""
+
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "name": name,
+                        "category": "mall",
+                        "location": {"lat": metadata.get("latitude", ""), "lng": metadata.get("longitude", "")}
+                    }
+                )
+                documents.append(doc)
+
+        elif category == "events":
+            items = re.split(r'## ', text)[1:]
+            for item in items:
+                parts = item.strip().split('\n')
+                name = parts[0].strip()
+                metadata = {}
+
+                for line in parts[1:]:
+                    if ":**" in line:
+                        key, value = line.split(":**")
+                        key = key.replace("**", "").strip()
+                        metadata[key] = value.strip()
+
+                content = f"""Ankara'da {name} etkinliği hakkında bilgi:
+Tür: {metadata.get('tur', 'Belirtilmemiş')}
+Konum: {metadata.get('konum', 'Belirtilmemiş')}
+Tarih: {metadata.get('tarih', 'Belirtilmemiş')}
+Fiyat: {metadata.get('fiyat', 'Belirtilmemiş')}
+"""
+
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "name": name,
+                        "category": "event",
+                        "location": {"lat": metadata.get("latitude", ""), "lng": metadata.get("longitude", "")}
+                    }
+                )
+                documents.append(doc)
+
+        return documents
+
+    def search(self, query, k=2):
+        """Tüm kategorilerde arama yapar ve en uygun sonuçları döndürür."""
+        results = {}
+
+        print(f"[RAG] '{query}' sorgusu için arama yapılıyor...")
+
+        for category, vectorstore in self.vectorstores.items():
+            print(f"[RAG] {category.upper()} kategorisinde arama yapılıyor...")
+            try:
+                category_results = vectorstore.similarity_search(query, k=k)
+                results[category] = category_results
+                print(f"[RAG] {category.capitalize()} için {len(category_results)} sonuç bulundu")
+
+                # İlk sonucun bir kısmını göster
+                if category_results:
+                    first_result = category_results[0].page_content
+                    print(f"[RAG] {category.capitalize()} ilk sonuç: {first_result[:100]}...")
+            except Exception as e:
+                print(f"[RAG] HATA: {category} araması başarısız: {str(e)}")
+                results[category] = []
+
+        return results
+
+🗂 Dosya: backend\rag\__init__.py
+---------------------------------
+from .data_loader import AnkaraDataLoader
+
+🗂 Dosya: backend\rag\__pycache__\data_loader.cpython-311.pyc
+-------------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\rag\__pycache__\__init__.cpython-311.pyc
+----------------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: backend\__pycache__\config.cpython-311.pyc
+----------------------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xa7 in position 0: invalid start byte
+
+🗂 Dosya: frontend\static\css\animations.css
+--------------------------------------------
+/* Message appear animation */
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Typing indicator animation */
+@keyframes typingBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.typing-indicator .dot:nth-child(1) {
+    animation: typingBounce 0.6s 0.1s infinite;
+}
+
+.typing-indicator .dot:nth-child(2) {
+    animation: typingBounce 0.6s 0.2s infinite;
+}
+
+.typing-indicator .dot:nth-child(3) {
+    animation: typingBounce 0.6s 0.3s infinite;
+}
+
+/* Pulse animation for send button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(var(--primary-color-rgb), 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
+    }
+}
+
+#send-button:focus {
+    animation: pulse 1.5s infinite;
+}
+
+/* Fade in animations for container elements */
+.header, .chat-container, .features, .footer {
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.header {
+    animation-delay: 0.1s;
+}
+
+.chat-container {
+    animation-delay: 0.3s;
+}
+
+.features {
+    animation-delay: 0.5s;
+}
+
+.footer {
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating animation for features */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.feature i {
+    animation: float 3s ease-in-out infinite;
+}
+
+.feature:nth-child(1) i {
+    animation-delay: 0s;
+}
+
+.feature:nth-child(2) i {
+    animation-delay: 0.5s;
+}
+
+.feature:nth-child(3) i {
+    animation-delay: 1s;
+}
+
+/* Theme toggle animation */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.theme-toggle.animate i {
+    animation: rotate 0.5s ease;
+}
+
+/* Message written animation for bot messages */
+@keyframes textAppear {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.bot-message.new .message-content p {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: textAppear 1s steps(40, end);
+}
+
+/* Sidebar button hover animation */
+.toggle-sidebar-btn {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-sidebar-btn:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+/* Added animation for modal options */
+.option-card {
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-3px);
+}
+
+.option-card.selected {
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+/* Interest tag hover animation */
+.interest-tag {
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.interest-tag:hover {
+    transform: scale(1.05);
+}
+
+.interest-tag.selected {
+    transform: scale(1.05);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+🗂 Dosya: frontend\static\css\auth.css
+--------------------------------------
+/* Giriş ve Kayıt Sayfaları CSS */
+:root {
+    --primary-color: #1e88e5;       /* Ana mavi tonu */
+    --primary-dark: #1565c0;        /* Koyu mavi tonu */
+    --secondary-color: #03a9f4;     /* İkincil mavi tonu */
+    --text-color: #1f2937;          /* Yazı rengi */
+    --text-light: #6b7280;          /* Açık yazı rengi */
+    --bg-color: #ffffff;            /* Arka plan rengi */
+    --bg-secondary: #f3f4f6;        /* İkincil arka plan rengi */
+    --border-color: #e5e7eb;        /* Sınır çizgisi rengi */
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --transition-speed: 0.3s;
+    --primary-color-rgb: 30, 136, 229; /* RGB değeri animasyonlar için */
+}
+
+.dark-theme {
+    --primary-color: #42a5f5;       /* Açık mavi tonu */
+    --primary-dark: #1e88e5;        /* Mavi tonu */
+    --secondary-color: #29b6f6;     /* İkincil mavi tonu */
+    --text-color: #f9fafb;
+    --text-light: #9ca3af;
+    --bg-color: #111827;
+    --bg-secondary: #1f2937;
+    --border-color: #374151;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-card {
+    background-color: var(--bg-color);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.auth-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.auth-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.auth-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-group input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-color);
+    font-family: inherit;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+    border: none;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+
+.auth-links a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--bg-secondary);
+    border-left: 4px solid transparent;
+}
+
+.alert-error {
+    border-left-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.alert-error p {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .auth-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .auth-logo {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+🗂 Dosya: frontend\static\css\main.css
+--------------------------------------
+:root {
+    --primary-color: #1e88e5;       /* Ana mavi tonu */
+    --primary-dark: #1565c0;        /* Koyu mavi tonu */
+    --secondary-color: #03a9f4;     /* İkincil mavi tonu */
+    --text-color: #1f2937;          /* Yazı rengi */
+    --text-light: #6b7280;          /* Açık yazı rengi */
+    --bg-color: #ffffff;            /* Arka plan rengi */
+    --bg-secondary: #f3f4f6;        /* İkincil arka plan rengi */
+    --border-color: #e5e7eb;        /* Sınır çizgisi rengi */
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --bot-message-bg: #f3f4f6;      /* Bot mesajı arka planı */
+    --user-message-bg: #1e88e5;     /* Kullanıcı mesajı arka planı (mavi) */
+    --user-message-color: #ffffff;  /* Kullanıcı mesajı yazı rengi */
+    --transition-speed: 0.3s;
+    --sidebar-width: 300px;
+    --sidebar-collapsed-width: 0px;
+    --primary-color-rgb: 30, 136, 229; /* RGB değeri animasyonlar için */
+}
+
+.dark-theme {
+    --primary-color: #42a5f5;       /* Açık mavi tonu */
+    --primary-dark: #1e88e5;        /* Mavi tonu */
+    --secondary-color: #29b6f6;     /* İkincil mavi tonu */
+    --text-color: #f9fafb;
+    --text-light: #9ca3af;
+    --bg-color: #111827;
+    --bg-secondary: #1f2937;
+    --border-color: #374151;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --bot-message-bg: #1f2937;
+    --user-message-bg: #42a5f5;     /* Kullanıcı mesajı arka planı (açık mavi) */
+    --user-message-color: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* App Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-speed);
+    z-index: 1000;
+    height: 100vh;
+    position: relative;
+}
+
+.sidebar-collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-width)));
+}
+
+.sidebar-header {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.conversations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.conversation-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+}
+
+.conversation-item:hover {
+    background-color: var(--border-color);
+}
+
+.conversation-item.active {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-left: 3px solid var(--primary-color);
+}
+
+.conversation-name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversation-date {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.conversation-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+.conversation-item:hover .conversation-actions {
+    opacity: 1;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: margin-left var(--transition-speed);
+}
+
+.toggle-sidebar-btn {
+    position: absolute;
+    top: 1rem;
+    z-index: 1100;
+    background-color: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease, background-color 0.2s, transform 0.2s;
+}
+
+.toggle-sidebar-btn:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    padding-left: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.app-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.settings-btn:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-secondary);
+}
+
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--text-light);
+    transition: color var(--transition-speed);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.theme-toggle:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-secondary);
+}
+
+/* Chatbot Avatar */
+.bot-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Chat Container Styles */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    overflow: hidden;
+    position: relative;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar Styles */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+.welcome-message {
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--bg-secondary);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.welcome-message h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.welcome-message ul {
+    text-align: left;
+    list-style: none;
+    margin: 1rem 0;
+}
+
+.welcome-message li {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.message {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 85%;
+    animation: messageAppear 0.3s ease forwards;
+    align-items: flex-start;
+}
+
+.bot-message {
+    align-self: flex-start;
+}
+
+.user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-avatar {
+    background-color: var(--secondary-color);
+}
+
+.message-content {
+    background-color: var(--bot-message-bg);
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    position: relative;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.user-message .message-content {
+    background-color: var(--user-message-bg);
+    color: var(--user-message-color);
+}
+
+/* Mesaj içeriği formatlaması */
+.message-content p {
+    margin: 0 0 0.75rem 0;
+    line-height: 1.6;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.message-content ul, .message-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.message-content li {
+    margin-bottom: 0.5rem;
+}
+
+.message-content strong {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.user-message .message-content strong {
+    color: white;
+}
+
+/* Rota önerileri için özel stil */
+.route-suggestion {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    border-left: 3px solid var(--primary-color);
+    padding: 1rem;
+    margin: 0.75rem 0;
+    border-radius: 0.5rem;
+}
+
+.route-time {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.route-location {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.route-details {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* Harita butonu stili */
+.show-map-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.show-map-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.show-map-btn i {
+    font-size: 1.1rem;
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.user-message .timestamp {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--bot-message-bg);
+    border-radius: 1rem;
+    position: absolute;
+    bottom: 5rem;
+    left: 1.5rem;
+    z-index: 10;
+}
+
+.hidden {
+    display: none;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--text-light);
+    border-radius: 50%;
+}
+
+.chat-input {
+    padding: 1rem;
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+}
+
+.chat-input form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#user-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-color);
+    font-family: inherit;
+    transition: border-color var(--transition-speed);
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+#send-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+#send-button:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Map Modal Styles */
+.map-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-modal.show {
+    display: flex;
+}
+
+.map-container {
+    width: 90%;
+    height: 85%;
+    max-width: 1200px;
+    background-color: var(--bg-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.map-header {
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.close-map-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem;
+}
+
+.close-map-btn:hover {
+    color: var(--primary-color);
+}
+
+#route-map {
+    flex: 1;
+    width: 100%;
+}
+
+.map-controls {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    background-color: var(--bg-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.map-control-btn {
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.map-control-btn:last-child {
+    margin-bottom: 0;
+}
+
+.map-control-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    border: none;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+/* Ses butonu için stil */
+#voice-button {
+    background-color: var(--bg-secondary);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    margin-right: 0.5rem;
+}
+
+#voice-button:hover {
+    background-color: var(--border-color);
+}
+
+#voice-button.listening {
+    background-color: var(--primary-color);
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(var(--primary-color-rgb), 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
+    }
+}
+
+/* Empty state and error state styles */
+.empty-state, .error-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+}
+
+.empty-state p, .error-state p {
+    margin-bottom: 1rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .welcome-message {
+        padding: 1.5rem;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+
+    .toggle-sidebar-btn {
+        left: 1rem !important;
+    }
+
+    .header {
+        padding-left: 4rem;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logo-container {
+        gap: 0.75rem;
+    }
+
+    .map-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .message-content {
+        padding: 0.75rem 1rem;
+    }
+}
+
+🗂 Dosya: frontend\static\css\maps.css
+--------------------------------------
+/* Google Maps Styles */
+.map-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    transition: height 0.3s ease;
+}
+
+.map-container.hidden {
+    height: 0;
+    margin-bottom: 0;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.map-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 100;
+}
+
+.map-controls .btn {
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 1rem;
+}
+
+.map-controls .btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Custom map marker info window */
+.custom-info-window {
+    padding: 0.5rem;
+    max-width: 200px;
+}
+
+.custom-info-window h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+.custom-info-window p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-color);
+}
+
+/* Route list in messages */
+.route-list {
+    background-color: var(--bg-secondary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+.route-item {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--bg-color);
+    border-radius: 0.375rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.route-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.route-item:last-child {
+    margin-bottom: 0;
+}
+
+.route-time {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 80px;
+}
+
+.route-details {
+    flex: 1;
+}
+
+.route-name {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.route-description {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.route-address {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.route-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.route-actions .btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Map button in message */
+.show-on-map-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.show-on-map-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .map-container {
+        height: 300px;
+    }
+
+    .route-item {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .route-time {
+        min-width: auto;
+    }
+}
+
+🗂 Dosya: frontend\static\css\modal.css
+---------------------------------------
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.modal-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preferences-modal {
+    background-color: var(--bg-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.modal-hidden .preferences-modal {
+    transform: translateY(-50px);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.modal-header h2 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+}
+
+.preference-section {
+    margin-bottom: 1.5rem;
+}
+
+.preference-section h3 {
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.option-card {
+    background-color: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.option-card:hover {
+    border-color: var(--border-color);
+}
+
+.option-card.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.option-card .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+/* Settings icon in header */
+.settings-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    }
+
+.settings-btn:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-secondary);
+}
+
+.interest-tag {
+    display: inline-block;
+    background-color: var(--bg-secondary);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.interest-tag.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Animation for modal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.preferences-modal {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+🗂 Dosya: frontend\static\css\onboarding.css
+--------------------------------------------
+.onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.onboarding-modal {
+    background-color: var(--bg-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.onboarding-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.onboarding-header h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.onboarding-step {
+    animation: fadeIn 0.5s ease;
+}
+
+.onboarding-step h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.onboarding-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.onboarding-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Same option styling as the preferences */
+.onboarding-step .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.onboarding-step .option-card {
+    background-color: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.onboarding-step .option-card:hover {
+    border-color: var(--border-color);
+    transform: translateY(-3px);
+}
+
+.onboarding-step .option-card.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    transform: translateY(-3px);
+}
+
+.onboarding-step .option-card .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.onboarding-step .interest-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.onboarding-step .interest-tag {
+    display: inline-block;
+    background-color: var(--bg-secondary);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.onboarding-step .interest-tag:hover {
+    transform: scale(1.05);
+}
+
+.onboarding-step .interest-tag.selected {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+🗂 Dosya: frontend\static\css\toast.css
+---------------------------------------
+/* Toast notifications */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--bg-color);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast-success {
+    border-left: 4px solid var(--primary-color);
+}
+
+.toast-success i {
+    color: var(--primary-color);
+}
+
+.toast-error {
+    border-left: 4px solid #ef4444;
+}
+
+.toast-error i {
+    color: #ef4444;
+}
+
+/* Toast Animation */
+@keyframes toastAppear {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.toast.show {
+    animation: toastAppear 0.3s ease forwards;
+}
+
+🗂 Dosya: frontend\static\img\1.jpeg
+------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+🗂 Dosya: frontend\static\img\2.jpeg
+------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+🗂 Dosya: frontend\static\img\3.jpeg
+------------------------------------
+[!] Dosya okunamadı: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+🗂 Dosya: frontend\static\img\bot-avatar.svg
+--------------------------------------------
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#4F46E5"/>
+  <path d="M30 40C30 35.5817 33.5817 32 38 32H62C66.4183 32 70 35.5817 70 40V60C70 64.4183 66.4183 68 62 68H55L50 75L45 68H38C33.5817 68 30 64.4183 30 60V40Z" fill="white"/>
+  <circle cx="40" cy="50" r="3" fill="#4F46E5"/>
+  <circle cx="50" cy="50" r="3" fill="#4F46E5"/>
+  <circle cx="60" cy="50" r="3" fill="#4F46E5"/>
+</svg>
+
+🗂 Dosya: frontend\static\img\logo.svg
+--------------------------------------
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#4F46E5"/>
+  <path d="M30 40C30 35.5817 33.5817 32 38 32H62C66.4183 32 70 35.5817 70 40V60C70 64.4183 66.4183 68 62 68H55L50 75L45 68H38C33.5817 68 30 64.4183 30 60V40Z" fill="white"/>
+  <circle cx="40" cy="50" r="3" fill="#4F46E5"/>
+  <circle cx="50" cy="50" r="3" fill="#4F46E5"/>
+  <circle cx="60" cy="50" r="3" fill="#4F46E5"/>
+</svg>
+
+🗂 Dosya: frontend\static\js\animations.js
+------------------------------------------
+// Animation functions and effects
+
+// Function to add ripple effect on button click
+function addRippleEffect(element) {
+    element.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        const diameter = Math.max(element.clientWidth, element.clientHeight);
+        const radius = diameter / 2;
+
+        ripple.style.width = ripple.style.height = `${diameter}px`;
+        ripple.style.left = `${e.clientX - element.getBoundingClientRect().left - radius}px`;
+        ripple.style.top = `${e.clientY - element.getBoundingClientRect().top - radius}px`;
+
+        element.appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
+}
+
+// Add typing animation to bot messages
+function addTypingAnimation(element, text, speed = 50) {
+    const paragraph = element.querySelector('p');
+    paragraph.textContent = '';
+
+    let i = 0;
+    const timer = setInterval(() => {
+        if (i < text.length) {
+            paragraph.textContent += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(timer);
+            element.classList.remove('typing');
+        }
+    }, speed);
+}
+
+// Particle animation for the background
+function initParticles() {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.classList.add('particles-container');
+    document.body.appendChild(particlesContainer);
+
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+
+        // Random position
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+
+        // Random size
+        const size = Math.random() * 10 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+
+        // Random animation duration
+        particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+
+        particlesContainer.appendChild(particle);
+    }
+}
+
+// Initialize animations when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Add ripple effect to send button
+    const sendButton = document.getElementById('send-button');
+    if (sendButton) addRippleEffect(sendButton);
+
+    // Add ripple effect to theme toggle
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (themeToggle) addRippleEffect(themeToggle);
+
+    // Add hover animations to features
+    const features = document.querySelectorAll('.feature');
+    features.forEach(feature => {
+        feature.addEventListener('mouseenter', () => {
+            const icon = feature.querySelector('i');
+            icon.style.animationPlayState = 'paused';
+            icon.classList.add('pulse');
+
+            setTimeout(() => {
+                icon.classList.remove('pulse');
+                icon.style.animationPlayState = 'running';
+            }, 1000);
+        });
+    });
+});
+
+🗂 Dosya: frontend\static\js\api.js
+-----------------------------------
+// API interaction functions
+
+/**
+ * Send a message to the chat API
+ *
+ * @param {string} message - User message
+ * @param {string|null} conversationId - Conversation ID
+ * @returns {Promise<Object>} - API response
+ */
+async function sendMessage(message, conversationId = null) {
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message,
+                conversation_id: conversationId
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('API error:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get all conversations for the current user
+ *
+ * @returns {Promise<Object[]>} - List of conversations
+ */
+async function getConversations() {
+    try {
+        const response = await fetch('/api/conversations');
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching conversations:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get conversation history
+ *
+ * @param {string} conversationId - Conversation ID
+ * @returns {Promise<Object[]>} - List of messages
+ */
+async function getConversationHistory(conversationId) {
+    try {
+        const response = await fetch(`/api/conversation/${conversationId}`);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching conversation history:', error);
+        throw error;
+    }
+}
+
+/**
+ * Update conversation name
+ *
+ * @param {string} conversationId - Conversation ID
+ * @param {string} name - New conversation name
+ * @returns {Promise<Object>} - API response
+ */
+async function updateConversation(conversationId, name) {
+    try {
+        const response = await fetch(`/api/conversation/${conversationId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating conversation:', error);
+        throw error;
+    }
+}
+
+/**
+ * Delete conversation
+ *
+ * @param {string} conversationId - Conversation ID
+ * @returns {Promise<Object>} - API response
+ */
+async function deleteConversation(conversationId) {
+    try {
+        const response = await fetch(`/api/conversation/${conversationId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting conversation:', error);
+        throw error;
+    }
+}
+
+🗂 Dosya: frontend\static\js\main.js
+------------------------------------
+// Main JavaScript for ChatBot functionality
+
+// DOM Elements
+const chatMessages = document.getElementById('chat-messages');
+const messageForm = document.getElementById('message-form');
+const userInput = document.getElementById('user-input');
+const sendButton = document.getElementById('send-button');
+const typingIndicator = document.getElementById('typing-indicator');
+const themeToggle = document.querySelector('.theme-toggle');
+
+// State
+let activeConversationId = null;
+let darkMode = localStorage.getItem('darkMode') === 'enabled';
+let currentRouteData = null;
+
+// Initialize the application
+function init() {
+    // Apply saved theme
+    if (darkMode) {
+        document.body.classList.add('dark-theme');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    // Setup event listeners
+    messageForm.addEventListener('submit', handleSubmit);
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // Update welcome message
+    updateWelcomeMessage();
+
+    // Temporarily disable message input until onboarding is complete
+    checkUserPreferences();
+}
+
+// Check if user preferences exist - if not, input should be disabled
+async function checkUserPreferences() {
+    try {
+        const response = await fetch('/api/user/preferences');
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (!data || Object.keys(data).length === 0) {
+                // Disable input until onboarding is completed
+                if (userInput) userInput.disabled = true;
+                if (sendButton) sendButton.disabled = true;
+            }
+        }
+    } catch (error) {
+        console.error('Error checking user preferences:', error);
+    }
+}
+
+// Update welcome message with Ankara travel info
+function updateWelcomeMessage() {
+    const welcomeMessage = chatMessages.querySelector('.welcome-message');
+    if (welcomeMessage) {
+        welcomeMessage.innerHTML = `
+            <h2>Ankara'yı Keşfedin! 🌟</h2>
+            <p>Merhaba, ben kişisel Ankara Gezi Rehberinizim! 🗺️ Tercihlerinize göre özel gezi rotaları oluşturabilirim.</p>
+            <ul>
+                <li>🗺️ <strong>Kişiselleştirilmiş Rotalar</strong> - "Yarın Ankara'da ne yapmalıyım?" gibi sorular sorabilirsiniz.</li>
+                <li>🍽️ <strong>Restoran Önerileri</strong> - "Ankara'da en iyi kebapçılar nerede?" diye sorabilirsiniz.</li>
+                <li>🏛️ <strong>Turistik Yerler</strong> - "Ankara'da mutlaka görülmesi gereken yerler" diyebilirsiniz.</li>
+                <li>🎭 <strong>Etkinlik Önerileri</strong> - "Bu hafta sonu Ankara'da hangi etkinlikler var?" diye sorabilirsiniz.</li>
+                <li>⏱️ <strong>Zaman Kısıtlı Rotalar</strong> - "Ankara'da 3 saatte neler yapabilirim?" şeklinde sorabilirsiniz.</li>
+            </ul>
+            <p>Sağ üstteki ⚙️ ayarlar butonundan tercihlerinizi güncelleyerek daha kişiselleştirilmiş öneriler alabilirsiniz!</p>
+            <p>Ne tür bir Ankara gezi rotası oluşturmamı istersiniz? 🤔</p>
+        `;
+    }
+}
+
+// Handle form submission
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    // Clear input
+    userInput.value = '';
+
+    // Add user message to chat
+    addMessageToChat(message, 'user');
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    try {
+        // Send message to API
+        const response = await sendMessage(message, activeConversationId);
+
+        // Hide typing indicator
+        hideTypingIndicator();
+
+        // Add bot response to chat
+        addMessageToChat(response.response, 'bot');
+
+        // Update conversation ID
+        activeConversationId = response.conversation_id;
+
+        // If this is a new conversation, refresh the sidebar
+        if (!activeSidebarConversationId) {
+            activeSidebarConversationId = activeConversationId;
+            await loadConversations();
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+
+        // Hide typing indicator
+        hideTypingIndicator();
+
+        // Add error message
+        addMessageToChat('Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.', 'bot');
+    }
+}
+
+// Format message content for better display
+function formatMessageContent(text) {
+    // Rota formatını tespit et ve özel olarak formatla
+    if (text.includes('Saat') || text.includes('saat') || text.includes(':00')) {
+        return formatRouteMessage(text);
+    }
+
+    // Genel mesaj formatlaması
+    let formattedText = text;
+
+    // Başlıkları bold yap
+    formattedText = formattedText.replace(/^(#+)\s+(.+)$/gm, '<strong>$2</strong>');
+
+    // Listeler için düzgün formatla
+    formattedText = formattedText.replace(/^[-*]\s+(.+)$/gm, '• $1');
+
+    // Satır sonlarını düzgün işle
+    formattedText = formattedText.split('\n').map(line => {
+        if (line.trim()) {
+            return `<p>${line}</p>`;
+        }
+        return '';
+    }).join('');
+
+    return formattedText;
+}
+
+// Format route messages specially
+function formatRouteMessage(text) {
+    const lines = text.split('\n');
+    let formattedHtml = '';
+    let routeItems = [];
+
+    lines.forEach(line => {
+        line = line.trim();
+        if (!line) return;
+
+        // Saat formatını tespit et (örn: "10:00 - Anıtkabir")
+        const timeMatch = line.match(/^(\d{1,2}:\d{2})\s*[-–]\s*(.+)$/);
+        if (timeMatch) {
+            const [, time, location] = timeMatch;
+            const details = extractLocationDetails(location);
+
+            routeItems.push({
+                time: time,
+                name: details.name,
+                address: details.address,
+                description: details.description
+            });
+
+            formattedHtml += `
+                <div class="route-suggestion">
+                    <div class="route-time">🕐 ${time}</div>
+                    <div class="route-location">${details.name}</div>
+                    ${details.address ? `<div class="route-details">📍 ${details.address}</div>` : ''}
+                    ${details.description ? `<div class="route-details">${details.description}</div>` : ''}
+                </div>
+            `;
+        } else if (line.includes('Rota') || line.includes('rota') || line.includes('gezi')) {
+            // Başlık satırı
+            formattedHtml += `<p><strong>${line}</strong></p>`;
+        } else {
+            // Normal satır
+            formattedHtml += `<p>${line}</p>`;
+        }
+    });
+
+    // Eğer rota önerileri varsa harita butonu ekle
+    if (routeItems.length > 0) {
+        currentRouteData = routeItems;
+        formattedHtml += `
+            <button class="show-map-btn" onclick="showRouteOnMap()">
+                <i class="fas fa-map-marked-alt"></i>
+                Rotayı Haritada Göster
+            </button>
+        `;
+    }
+
+    return formattedHtml;
+}
+
+// Extract location details from text
+function extractLocationDetails(text) {
+    // Parantez içindeki adresi ayır
+    const addressMatch = text.match(/\(([^)]+)\)/);
+    let name = text;
+    let address = '';
+    let description = '';
+
+    if (addressMatch) {
+        address = addressMatch[1];
+        name = text.replace(addressMatch[0], '').trim();
+    }
+
+    // Tire ile ayrılmış açıklamayı ayır
+    const parts = name.split(' - ');
+    if (parts.length > 1) {
+        name = parts[0].trim();
+        description = parts.slice(1).join(' - ').trim();
+    }
+
+    return { name, address, description };
+}
+
+// Show route on map
+function showRouteOnMap() {
+    if (!currentRouteData || currentRouteData.length === 0) {
+        alert('Haritada gösterilecek rota bulunamadı!');
+        return;
+    }
+
+    // Create map modal
+    const mapModal = document.querySelector('.map-modal') || createMapModal();
+    mapModal.classList.add('show');
+
+    // Initialize map after modal is visible
+    setTimeout(() => {
+        initializeMap(currentRouteData);
+    }, 100);
+}
+
+// Create map modal
+function createMapModal() {
+    const modal = document.createElement('div');
+    modal.className = 'map-modal';
+    modal.innerHTML = `
+        <div class="map-container">
+            <div class="map-header">
+                <h3>Gezi Rotanız 🗺️</h3>
+                <button class="close-map-btn" onclick="closeMapModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="route-map"></div>
+            <div class="map-controls">
+                <button class="map-control-btn" onclick="fitMapToRoute()" title="Tüm Rotayı Göster">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                </button>
+                <button class="map-control-btn" onclick="startNavigation()" title="Navigasyonu Başlat">
+                    <i class="fas fa-route"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// Close map modal
+function closeMapModal() {
+    const mapModal = document.querySelector('.map-modal');
+    if (mapModal) {
+        mapModal.classList.remove('show');
+    }
+}
+
+// Initialize Google Maps
+let map;
+let markers = [];
+let directionsService;
+let directionsRenderer;
+
+function initializeMap(routeData) {
+    // Ankara'nın merkezi
+    const ankaraCenter = { lat: 39.9334, lng: 32.8597 };
+
+    // Harita oluştur
+    map = new google.maps.Map(document.getElementById('route-map'), {
+        center: ankaraCenter,
+        zoom: 12,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true
+    });
+
+    // Directions servisleri
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: false,
+        polylineOptions: {
+            strokeColor: '#1e88e5',
+            strokeWeight: 5,
+            strokeOpacity: 0.8
+        }
+    });
+
+    // Her durak için marker ekle
+    const bounds = new google.maps.LatLngBounds();
+    const waypoints = [];
+
+    routeData.forEach((stop, index) => {
+        // Geocoding API kullanarak adresi koordinata çevir
+        geocodeAddress(stop.name + ', Ankara', (location) => {
+            if (location) {
+                const marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: stop.name,
+                    label: {
+                        text: (index + 1).toString(),
+                        color: 'white',
+                        fontWeight: 'bold'
+                    },
+                    animation: google.maps.Animation.DROP
+                });
+
+                // Info window ekle
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="padding: 10px;">
+                            <h4 style="margin: 0 0 5px 0;">${stop.time} - ${stop.name}</h4>
+                            ${stop.address ? `<p style="margin: 5px 0;">📍 ${stop.address}</p>` : ''}
+                            ${stop.description ? `<p style="margin: 5px 0;">${stop.description}</p>` : ''}
+                        </div>
+                    `
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+                bounds.extend(location);
+
+                // Waypoint olarak ekle (ilk ve son hariç)
+                if (index > 0 && index < routeData.length - 1) {
+                    waypoints.push({
+                        location: location,
+                        stopover: true
+                    });
+                }
+
+                // Tüm markerlar eklendikten sonra rotayı çiz
+                if (markers.length === routeData.length) {
+                    // Haritayı tüm noktalara sığdır
+                    map.fitBounds(bounds);
+
+                    // Rota çiz
+                    if (routeData.length > 1) {
+                        const origin = markers[0].getPosition();
+                        const destination = markers[markers.length - 1].getPosition();
+
+                        directionsService.route({
+                            origin: origin,
+                            destination: destination,
+                            waypoints: waypoints,
+                            travelMode: google.maps.TravelMode.DRIVING,
+                            optimizeWaypoints: false
+                        }, (response, status) => {
+                            if (status === 'OK') {
+                                directionsRenderer.setDirections(response);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+}
+
+// Geocode address to coordinates
+function geocodeAddress(address, callback) {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: address }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+            callback(results[0].geometry.location);
+        } else {
+            console.error('Geocode was not successful for the following reason: ' + status);
+            callback(null);
+        }
+    });
+}
+
+// Fit map to show all route
+function fitMapToRoute() {
+    if (markers.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        markers.forEach(marker => {
+            bounds.extend(marker.getPosition());
+        });
+        map.fitBounds(bounds);
+    }
+}
+
+// Start navigation (opens in Google Maps)
+function startNavigation() {
+    if (currentRouteData && currentRouteData.length > 0) {
+        // Google Maps URL oluştur
+        let mapsUrl = 'https://www.google.com/maps/dir/';
+
+        currentRouteData.forEach((stop, index) => {
+            const query = encodeURIComponent(stop.name + ', Ankara, Turkey');
+            mapsUrl += query + '/';
+        });
+
+        // Yeni sekmede aç
+        window.open(mapsUrl, '_blank');
+    }
+}
+
+// Add a message to the chat
+function addMessageToChat(text, sender, time = null) {
+    // Remove welcome message if it exists
+    const welcomeMessage = chatMessages.querySelector('.welcome-message');
+    if (welcomeMessage) {
+        welcomeMessage.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', `${sender}-message`);
+
+    if (sender === 'bot') {
+        messageDiv.classList.add('new');
+    }
+
+    // Use provided time or current time
+    const now = new Date();
+    const timeString = time || `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+    // Format the content
+    const formattedContent = sender === 'bot' ? formatMessageContent(text) : `<p>${text}</p>`;
+
+    if (sender === 'user') {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                ${formattedContent}
+                <span class="timestamp">${timeString}</span>
+            </div>
+            <div class="avatar user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+            <div class="avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                ${formattedContent}
+                <span class="timestamp">${timeString}</span>
+            </div>
+        `;
+    }
+
+    chatMessages.appendChild(messageDiv);
+    scrollToBottom();
+
+    // Play arrival animation
+    setTimeout(() => {
+        messageDiv.classList.remove('new');
+    }, 1000);
+}
+
+// Show typing indicator
+function showTypingIndicator() {
+    typingIndicator.classList.remove('hidden');
+    scrollToBottom();
+}
+
+// Hide typing indicator
+function hideTypingIndicator() {
+    typingIndicator.classList.add('hidden');
+}
+
+// Scroll to bottom of chat
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Toggle dark/light theme
+function toggleTheme() {
+    darkMode = !darkMode;
+
+    if (darkMode) {
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('darkMode', 'enabled');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+        document.body.classList.remove('dark-theme');
+        localStorage.setItem('darkMode', 'disabled');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+
+    // Add animation class
+    themeToggle.classList.add('animate');
+
+    // Remove animation class after animation completes
+    setTimeout(() => {
+        themeToggle.classList.remove('animate');
+    }, 500);
+}
+
+// Make functions available globally
+window.showRouteOnMap = showRouteOnMap;
+window.closeMapModal = closeMapModal;
+window.fitMapToRoute = fitMapToRoute;
+window.startNavigation = startNavigation;
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', init);
+
+🗂 Dosya: frontend\static\js\maps.js
+------------------------------------
+  (boş dosya)
+
+🗂 Dosya: frontend\static\js\onboarding.js
+------------------------------------------
+// Onboarding Process for Required User Preferences
+
+// DOM Elements
+const onboardingModal = document.getElementById('onboarding-modal');
+const onboardingSteps = document.querySelectorAll('.onboarding-step');
+const prevStepBtn = document.getElementById('prev-step');
+const nextStepBtn = document.getElementById('next-step');
+const finishBtn = document.getElementById('finish-onboarding');
+const progressFill = document.querySelector('.progress-fill');
+const progressText = document.querySelector('.progress-text');
+
+// State
+let currentStep = 1;
+const totalSteps = onboardingSteps.length;
+let onboardingComplete = false;
+let onboardingPreferences = {
+    budget: null,
+    company: null,
+    dress: null,
+    mood: null,
+    time: null,
+    interests: []
+};
+
+// Events to handle before page unload if onboarding not complete
+window.addEventListener('beforeunload', function(e) {
+    if (!onboardingComplete && isOnboardingVisible()) {
+        // Show a confirmation dialog
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+    }
+});
+
+// Initialize onboarding
+function initOnboarding() {
+    // Setup event listeners
+    prevStepBtn.addEventListener('click', goToPreviousStep);
+    nextStepBtn.addEventListener('click', goToNextStep);
+    finishBtn.addEventListener('click', finishOnboarding);
+
+    // Setup option cards in onboarding
+    const onboardingOptionCards = document.querySelectorAll('.onboarding-step .option-card');
+    onboardingOptionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const preference = card.dataset.preference;
+            const value = card.dataset.value;
+
+            // Remove selected class from siblings
+            document.querySelectorAll(`.onboarding-step .option-card[data-preference="${preference}"]`).forEach(sibling => {
+                sibling.classList.remove('selected');
+            });
+
+            // Add selected class to this card
+            card.classList.add('selected');
+
+            // Update preferences
+            onboardingPreferences[preference] = value;
+
+            // Enable next button if a selection was made
+            if (currentStep < totalSteps) {
+                nextStepBtn.disabled = false;
+            } else {
+                checkIfCanFinish();
+            }
+        });
+    });
+
+    // Setup interest tags in onboarding
+    const onboardingInterestTags = document.querySelectorAll('.onboarding-step .interest-tag');
+    onboardingInterestTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            const interest = tag.dataset.interest;
+
+            // Toggle selected class
+            tag.classList.toggle('selected');
+
+            // Update interests array
+            if (tag.classList.contains('selected')) {
+                if (!onboardingPreferences.interests.includes(interest)) {
+                    onboardingPreferences.interests.push(interest);
+                }
+            } else {
+                onboardingPreferences.interests = onboardingPreferences.interests.filter(i => i !== interest);
+            }
+
+            // Enable finish button if at least one interest is selected
+            if (currentStep === totalSteps) {
+                checkIfCanFinish();
+            }
+        });
+    });
+
+    // Check if we need to show the onboarding
+    checkOnboardingStatus();
+}
+
+// Check if onboarding is required
+function checkOnboardingStatus() {
+    // Check if there are saved preferences in the database
+    checkForExistingPreferences().then(hasPreferences => {
+        if (!hasPreferences) {
+            // Show onboarding if no preferences found
+            showOnboarding();
+        } else {
+            // Mark onboarding as complete
+            onboardingComplete = true;
+        }
+    });
+}
+
+// Check if user already has preferences in database
+async function checkForExistingPreferences() {
+    try {
+        const response = await fetch('/api/user/preferences');
+
+        if (response.ok) {
+            const data = await response.json();
+
+            // Check if we have actual preferences data
+            return data && Object.keys(data).length > 0;
+        }
+
+        return false;
+    } catch (error) {
+        console.error('Error checking for existing preferences:', error);
+        return false;
+    }
+}
+
+// Show the onboarding modal
+function showOnboarding() {
+    onboardingModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+
+    // Initialize the first step
+    updateStep(1);
+
+    // Disable message input until onboarding is complete
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    if (userInput) userInput.disabled = true;
+    if (sendButton) sendButton.disabled = true;
+}
+
+// Go to next step
+function goToNextStep() {
+    if (currentStep < totalSteps) {
+        updateStep(currentStep + 1);
+    }
+}
+
+// Go to previous step
+function goToPreviousStep() {
+    if (currentStep > 1) {
+        updateStep(currentStep - 1);
+    }
+}
+
+// Update the current step
+function updateStep(stepNumber) {
+    // Update state
+    currentStep = stepNumber;
+
+    // Hide all steps
+    onboardingSteps.forEach(step => {
+        step.classList.add('hidden');
+    });
+
+    // Show current step
+    const currentStepElement = document.querySelector(`.onboarding-step[data-step="${currentStep}"]`);
+    currentStepElement.classList.remove('hidden');
+
+    // Update buttons
+    prevStepBtn.disabled = currentStep === 1;
+
+    if (currentStep === totalSteps) {
+        nextStepBtn.classList.add('hidden');
+        finishBtn.classList.remove('hidden');
+        checkIfCanFinish();
+    } else {
+        nextStepBtn.classList.remove('hidden');
+        finishBtn.classList.add('hidden');
+
+        // Check if we can enable the next button
+        const preferenceForCurrentStep = getPreferenceForStep(currentStep);
+        nextStepBtn.disabled = !onboardingPreferences[preferenceForCurrentStep];
+    }
+
+    // Update progress
+    const progressPercentage = (currentStep / totalSteps) * 100;
+    progressFill.style.width = `${progressPercentage}%`;
+    progressText.textContent = `Adım ${currentStep}/${totalSteps}`;
+}
+
+// Get the preference key for the current step
+function getPreferenceForStep(step) {
+    switch (step) {
+        case 1: return 'budget';
+        case 2: return 'company';
+        case 3: return 'dress';
+        case 4: return 'mood';
+        case 5: return 'time';
+        case 6: return 'interests';
+        default: return null;
+    }
+}
+
+// Check if we can enable the finish button
+function checkIfCanFinish() {
+    // For the interests step, we need at least one interest selected
+    if (currentStep === totalSteps) {
+        finishBtn.disabled = onboardingPreferences.interests.length === 0;
+    }
+}
+
+// Finish the onboarding process
+async function finishOnboarding() {
+    try {
+        // Save to server
+        const response = await fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(onboardingPreferences)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save preferences');
+        }
+
+        // Save to local storage as backup
+        localStorage.setItem('userPreferences', JSON.stringify(onboardingPreferences));
+
+        // Mark onboarding as complete
+        onboardingComplete = true;
+
+        // Hide onboarding modal - ÖNEMLİ: display none ile tamamen gizle
+        onboardingModal.style.display = 'none'; // Bu şekilde modal tamamen kaldırılıyor
+        document.body.style.overflow = ''; // Restore scrolling
+
+        // Enable message input
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        if (userInput) {
+            userInput.disabled = false;
+            userInput.focus(); // Otomatik olarak input alanına odaklan
+        }
+        if (sendButton) sendButton.disabled = false;
+
+        // Update user preferences in the preferences module
+        if (typeof userPreferences !== 'undefined') {
+            userPreferences = { ...onboardingPreferences };
+            if (typeof updatePreferencesUI === 'function') {
+                updatePreferencesUI();
+            }
+        }
+
+        // Tercihlerden bir özet oluştur
+        let preferenceSummary = createPreferenceSummary(onboardingPreferences);
+
+        // Otomatik AI mesajı ile karşılama
+        showWelcomeResponse(preferenceSummary);
+
+    } catch (error) {
+        console.error('Error saving preferences:', error);
+
+        // Show error message
+        const toast = document.createElement('div');
+        toast.classList.add('toast', 'toast-error');
+        toast.innerHTML = '<i class="fas fa-exclamation-circle"></i> Tercihleriniz kaydedilemedi! Lütfen tekrar deneyin.';
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }, 100);
+    }
+}
+
+// Tercihlerden özet oluştur
+function createPreferenceSummary(preferences) {
+    const summary = [];
+
+    if (preferences.budget) {
+        const budgetMap = {
+            'low': 'düşük bütçeli (0-500₺)',
+            'medium': 'orta bütçeli (500-2000₺)',
+            'high': 'yüksek bütçeli (2000₺+)'
+        };
+        summary.push(budgetMap[preferences.budget]);
+    }
+
+    if (preferences.company) {
+        const companyMap = {
+            'alone': 'yalnız',
+            'family': 'ailenizle',
+            'friends': 'arkadaşlarınızla',
+            'partner': 'sevgilinizle'
+        };
+        summary.push(companyMap[preferences.company]);
+    }
+
+    if (preferences.time) {
+        summary.push(`${preferences.time} saatlik`);
+    }
+
+    if (preferences.interests && preferences.interests.length > 0) {
+        const interestMap = {
+            'food': 'yeme-içme',
+            'shopping': 'alışveriş',
+            'nature': 'doğa',
+            'sports': 'spor',
+            'theater': 'tiyatro',
+            'cinema': 'sinema',
+            'concert': 'konser',
+            'museum': 'müze',
+            'comedy': 'komedi'
+        };
+
+        const interests = preferences.interests.map(i => interestMap[i] || i);
+        if (interests.length === 1) {
+            summary.push(`${interests[0]} odaklı`);
+        } else if (interests.length === 2) {
+            summary.push(`${interests[0]} ve ${interests[1]} içeren`);
+        } else {
+            const lastInterest = interests.pop();
+            summary.push(`${interests.join(', ')} ve ${lastInterest} içeren`);
+        }
+    }
+
+    return summary.join(', ') + ' bir Ankara gezi planı';
+}
+
+// Otomatik AI karşılama mesajı gönder
+function showWelcomeResponse(preferenceSummary) {
+    // Welcome mesajını kaldır
+    const welcomeMessage = document.querySelector('.welcome-message');
+    if (welcomeMessage) {
+        welcomeMessage.remove();
+    }
+
+    // Typing indicator göster
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.classList.remove('hidden');
+    }
+
+    // Scroll to bottom
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // 1.5 saniye sonra yapay yanıt göster
+    setTimeout(() => {
+        // Typing indicator gizle
+        if (typingIndicator) {
+            typingIndicator.classList.add('hidden');
+        }
+
+        // AI mesajını ekle
+        const chatMessages = document.getElementById('chat-messages');
+        if (chatMessages) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'bot-message', 'new');
+
+            const now = new Date();
+            const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            messageDiv.innerHTML = `
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Tercihleriniz başarıyla kaydedildi! Şimdi sizin için ${preferenceSummary} önerebilirim. "Ankara'da gezilecek yerler öner" yazarak başlayabilir veya başka bir soru sorabilirsiniz.</p>
+                    <span class="timestamp">${timeString}</span>
+                </div>
+            `;
+
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Play arrival animation
+            setTimeout(() => {
+                messageDiv.classList.remove('new');
+            }, 1000);
+        }
+    }, 1500);
+}
+
+// Check if onboarding is visible
+function isOnboardingVisible() {
+    return !onboardingModal.classList.contains('hidden');
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initOnboarding);
+
+🗂 Dosya: frontend\static\js\preferences.js
+-------------------------------------------
+// User Preferences Management
+
+// DOM Elements
+const preferencesModal = document.getElementById('preferences-modal');
+const openPreferencesBtn = document.getElementById('open-preferences-modal');
+const closePreferencesBtn = document.getElementById('close-preferences-modal');
+const savePreferencesBtn = document.getElementById('save-preferences');
+const resetPreferencesBtn = document.getElementById('reset-preferences');
+const optionCards = document.querySelectorAll('#preferences-modal .option-card');
+const interestTags = document.querySelectorAll('#preferences-modal .interest-tag');
+
+// State
+let userPreferences = {
+    budget: null,
+    company: null,
+    dress: null,
+    mood: null,
+    time: null,
+    interests: []
+};
+
+// Initialize preferences
+function initPreferences() {
+    // Setup event listeners
+    openPreferencesBtn.addEventListener('click', openPreferencesModal);
+    closePreferencesBtn.addEventListener('click', closePreferencesModal);
+    savePreferencesBtn.addEventListener('click', savePreferences);
+    resetPreferencesBtn.addEventListener('click', resetPreferences);
+
+    // Option cards (single selection per category)
+    optionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const preference = card.dataset.preference;
+            const value = card.dataset.value;
+
+            // Remove selected class from siblings
+            document.querySelectorAll(`#preferences-modal .option-card[data-preference="${preference}"]`).forEach(sibling => {
+                sibling.classList.remove('selected');
+            });
+
+            // Add selected class to this card
+            card.classList.add('selected');
+
+            // Update preferences
+            userPreferences[preference] = value;
+        });
+    });
+
+    // Interest tags (multiple selection)
+    interestTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            const interest = tag.dataset.interest;
+
+            // Toggle selected class
+            tag.classList.toggle('selected');
+
+            // Update interests array
+            if (tag.classList.contains('selected')) {
+                if (!userPreferences.interests.includes(interest)) {
+                    userPreferences.interests.push(interest);
+                }
+            } else {
+                userPreferences.interests = userPreferences.interests.filter(i => i !== interest);
+            }
+        });
+    });
+
+    // Load saved preferences
+    loadPreferences();
+}
+
+// Open preferences modal
+function openPreferencesModal() {
+    preferencesModal.classList.remove('modal-hidden');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+}
+
+// Close preferences modal
+function closePreferencesModal() {
+    preferencesModal.classList.add('modal-hidden');
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Save preferences
+async function savePreferences() {
+    try {
+        // Save to server
+        const response = await fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userPreferences)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save preferences');
+        }
+
+        // Save to local storage as backup
+        localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
+
+        // Close modal
+        closePreferencesModal();
+
+        // Show success message
+        const toast = document.createElement('div');
+        toast.classList.add('toast', 'toast-success');
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> Tercihleriniz kaydedildi! Şimdi "Ankara\'da gezilecek yerler öner" diyebilirsiniz.';
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }, 100);
+
+    } catch (error) {
+        console.error('Error saving preferences:', error);
+
+        // Show error message
+        const toast = document.createElement('div');
+        toast.classList.add('toast', 'toast-error');
+        toast.innerHTML = '<i class="fas fa-exclamation-circle"></i> Tercihleriniz kaydedilemedi!';
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }, 100);
+    }
+}
+
+// Reset preferences
+function resetPreferences() {
+    // Clear all selections
+    optionCards.forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    interestTags.forEach(tag => {
+        tag.classList.remove('selected');
+    });
+
+    // Reset preferences object
+    userPreferences = {
+        budget: null,
+        company: null,
+        dress: null,
+        mood: null,
+        time: null,
+        interests: []
+    };
+}
+
+// Load preferences
+async function loadPreferences() {
+    try {
+        // Try to load from server
+        const response = await fetch('/api/user/preferences');
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data && Object.keys(data).length > 0) {
+                userPreferences = data;
+
+                // Update UI to match loaded preferences
+                updatePreferencesUI();
+                return;
+            }
+        }
+
+        // Fallback to local storage if server fails
+        const savedPreferences = localStorage.getItem('userPreferences');
+        if (savedPreferences) {
+            userPreferences = JSON.parse(savedPreferences);
+
+            // Update UI to match loaded preferences
+            updatePreferencesUI();
+        }
+    } catch (error) {
+        console.error('Error loading preferences:', error);
+    }
+}
+
+// Update UI based on loaded preferences
+function updatePreferencesUI() {
+    // Single selection preferences
+    for (const [key, value] of Object.entries(userPreferences)) {
+        if (key !== 'interests' && value) {
+            const card = document.querySelector(`#preferences-modal .option-card[data-preference="${key}"][data-value="${value}"]`);
+            if (card) {
+                card.classList.add('selected');
+            }
+        }
+    }
+
+    // Interests (multiple selection)
+    if (userPreferences.interests && userPreferences.interests.length > 0) {
+        userPreferences.interests.forEach(interest => {
+            const tag = document.querySelector(`#preferences-modal .interest-tag[data-interest="${interest}"]`);
+            if (tag) {
+                tag.classList.add('selected');
+            }
+        });
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initPreferences);
+
+🗂 Dosya: frontend\static\js\sidebar.js
+---------------------------------------
+// Sidebar functionality
+
+// DOM Elements
+const sidebar = document.getElementById('sidebar');
+const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+const conversationsList = document.getElementById('conversations-list');
+const newChatBtn = document.getElementById('new-chat-btn');
+const mainContent = document.querySelector('.main-content');
+
+// State
+let conversations = [];
+let activeSidebarConversationId = null;
+
+// Initialize sidebar
+async function initSidebar() {
+    toggleSidebarBtn.addEventListener('click', toggleSidebar);
+    newChatBtn.addEventListener('click', startNewConversation);
+
+    // Butonun başlangıç pozisyonunu ayarla
+    updateToggleButtonPosition();
+
+    await loadConversations();
+
+    // Ekran boyutu değiştiğinde kontrol et
+    window.addEventListener('resize', handleResize);
+
+    // İlk yüklemede ekran boyutunu kontrol et
+    handleResize();
+}
+
+// Ekran boyutu değişimini kontrol et
+function handleResize() {
+    if (window.innerWidth <= 768) {
+        sidebar.classList.add('sidebar-collapsed');
+        mainContent.style.marginLeft = '0';
+        toggleSidebarBtn.style.left = '1rem';
+    } else {
+        sidebar.classList.remove('sidebar-collapsed');
+        mainContent.style.marginLeft = '';
+        updateToggleButtonPosition();
+    }
+}
+
+// Toggle sidebar
+function toggleSidebar() {
+    sidebar.classList.toggle('sidebar-collapsed');
+
+    if (sidebar.classList.contains('sidebar-collapsed')) {
+        mainContent.style.marginLeft = '0';
+        toggleSidebarBtn.style.left = '1rem';
+    } else {
+        mainContent.style.marginLeft = '';
+
+        // Tarayıcı bir sonraki çizim için hazır olduğunda çalıştır
+        requestAnimationFrame(() => {
+            updateToggleButtonPosition();
+        });
+    }
+}
+
+
+// Butonun pozisyonunu güncelle
+function updateToggleButtonPosition() {
+    if (!sidebar.classList.contains('sidebar-collapsed')) {
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const sidebarLeft = sidebarRect.left;
+        const sidebarWidth = sidebarRect.width;
+
+        // Sidebar'ın içinde sağdan 12px içeride olacak şekilde butonu konumlandır
+        const buttonOffset = 52; // buton genişliği 40px + sağ boşluk 12px
+        const leftPosition = sidebarLeft + sidebarWidth - buttonOffset;
+
+        toggleSidebarBtn.style.left = `${leftPosition}px`;
+    }
+}
+
+
+// Load conversations
+async function loadConversations() {
+    try {
+        conversationsList.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        `;
+
+        conversations = await getConversations();
+
+        if (conversations.length === 0) {
+            conversationsList.innerHTML = `
+                <div class="empty-state">
+                    <p>Henüz hiç sohbet yok.</p>
+                    <p>Yeni bir sohbet başlatmak için "Yeni Sohbet" butonuna tıklayın.</p>
+                </div>
+            `;
+            return;
+        }
+
+        renderConversations();
+    } catch (error) {
+        console.error('Error loading conversations:', error);
+        conversationsList.innerHTML = `
+            <div class="error-state">
+                <p>Sohbetler yüklenirken bir hata oluştu.</p>
+                <button class="btn btn-secondary" onclick="loadConversations()">Tekrar Dene</button>
+            </div>
+        `;
+    }
+}
+
+// Render conversations
+function renderConversations() {
+    conversationsList.innerHTML = '';
+
+    conversations.forEach(conversation => {
+        const conversationItem = document.createElement('div');
+        conversationItem.classList.add('conversation-item');
+
+        if (conversation.id === activeSidebarConversationId) {
+            conversationItem.classList.add('active');
+        }
+
+        conversationItem.innerHTML = `
+            <div class="conversation-name">${conversation.name}</div>
+            <div class="conversation-date">${conversation.date}</div>
+            <div class="conversation-actions">
+                <button class="btn btn-icon btn-secondary rename-btn" data-id="${conversation.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-icon btn-secondary delete-btn" data-id="${conversation.id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+
+        conversationItem.addEventListener('click', () => loadConversation(conversation.id));
+
+        conversationsList.appendChild(conversationItem);
+    });
+
+    // Add event listeners to buttons
+    document.querySelectorAll('.rename-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            renameConversation(btn.dataset.id);
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            confirmDeleteConversation(btn.dataset.id);
+        });
+    });
+}
+
+// Load conversation
+async function loadConversation(conversationId) {
+    try {
+        // Set active conversation
+        activeSidebarConversationId = conversationId;
+        activeConversationId = conversationId;
+
+        // Update sidebar UI
+        renderConversations();
+
+        // On mobile, close sidebar after selecting a conversation
+        if (window.innerWidth <= 768) {
+            toggleSidebar();
+        }
+
+        // Clear chat messages
+        chatMessages.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        `;
+
+        // Load conversation history
+        const messages = await getConversationHistory(conversationId);
+
+        // Clear chat messages again
+        chatMessages.innerHTML = '';
+
+        // Display messages
+        messages.forEach(message => {
+            const sender = message.is_user ? 'user' : 'bot';
+            addMessageToChat(message.content, sender, message.time);
+        });
+
+        // Scroll to bottom
+        scrollToBottom();
+    } catch (error) {
+        console.error('Error loading conversation:', error);
+        chatMessages.innerHTML = `
+            <div class="error-state">
+                <p>Sohbet yüklenirken bir hata oluştu.</p>
+                <button class="btn btn-secondary" onclick="loadConversation('${conversationId}')">Tekrar Dene</button>
+            </div>
+        `;
+    }
+}
+
+// Start a new conversation
+function startNewConversation() {
+    // Clear active conversation
+    activeSidebarConversationId = null;
+    activeConversationId = null;
+
+    // Update sidebar UI
+    renderConversations();
+
+    // Clear chat messages
+    chatMessages.innerHTML = `
+        <div class="welcome-message">
+            <h2>Ankara'yı Keşfedin!</h2>
+            <p>Merhaba, ben size Ankara'daki gezilecek yerler, tarihi mekanlar, parklar,
+               müzeler ve daha fazlası hakkında bilgiler verebilirim. Ne öğrenmek istersiniz?</p>
+        </div>
+    `;
+
+    // On mobile, close sidebar after starting a new conversation
+    if (window.innerWidth <= 768) {
+        toggleSidebar();
+    }
+}
+
+// Rename conversation
+async function renameConversation(conversationId) {
+    const conversation = conversations.find(c => c.id == conversationId);
+    if (!conversation) return;
+
+    const newName = prompt('Sohbet adını değiştir:', conversation.name);
+    if (!newName || newName === conversation.name) return;
+
+    try {
+        await updateConversation(conversationId, newName);
+
+        // Update local state
+        conversation.name = newName;
+
+        // Update UI
+        renderConversations();
+    } catch (error) {
+        console.error('Error renaming conversation:', error);
+        alert('Sohbet adı değiştirilirken bir hata oluştu.');
+    }
+}
+
+// Confirm delete conversation
+function confirmDeleteConversation(conversationId) {
+    if (confirm('Bu sohbeti silmek istediğinizden emin misiniz?')) {
+        deleteConversationById(conversationId);
+    }
+}
+
+// Delete conversation
+async function deleteConversationById(conversationId) {
+    try {
+        await deleteConversation(conversationId);
+
+        // Update local state
+        conversations = conversations.filter(c => c.id != conversationId);
+
+        // If the deleted conversation was active, start a new conversation
+        if (conversationId == activeSidebarConversationId) {
+            startNewConversation();
+        } else {
+            // Just update UI
+            renderConversations();
+        }
+    } catch (error) {
+        console.error('Error deleting conversation:', error);
+        alert('Sohbet silinirken bir hata oluştu.');
+    }
+}
+
+// Run initialization when DOM is loaded
+document.addEventListener('DOMContentLoaded', initSidebar);
+
+🗂 Dosya: frontend\static\js\speech.js
+--------------------------------------
+// Basit SpeechRecognition test
+document.addEventListener('DOMContentLoaded', function() {
+    const voiceButton = document.getElementById('voice-button');
+    const userInput = document.getElementById('user-input');
+    const messageForm = document.getElementById('message-form');
+
+    if (!voiceButton) {
+        console.error('Ses butonu bulunamadı!');
+        return;
+    }
+
+    // Speech Recognition API desteğini kontrol et
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        console.error('Bu tarayıcı Speech Recognition API desteklemiyor!');
+        voiceButton.style.display = 'none';
+        return;
+    }
+
+    // Speech Recognition nesnesini oluştur
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'tr-TR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    // Sonuç olayı
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        console.log('Tanınan konuşma:', transcript);
+        userInput.value = transcript;
+
+        // Otomatik gönder
+        setTimeout(function() {
+            messageForm.dispatchEvent(new Event('submit'));
+        }, 500);
+    };
+
+    // Hata olayı
+    recognition.onerror = function(event) {
+        console.error('Ses tanıma hatası:', event.error);
+        voiceButton.classList.remove('listening');
+        voiceButton.querySelector('i').className = 'fas fa-microphone';
+
+        alert('Ses tanıma hatası: ' + event.error);
+    };
+
+    // Bitiş olayı
+    recognition.onend = function() {
+        console.log('Ses tanıma bitti');
+        voiceButton.classList.remove('listening');
+        voiceButton.querySelector('i').className = 'fas fa-microphone';
+    };
+
+    // Tıklama işleyicisi
+    voiceButton.addEventListener('click', function() {
+        console.log('Ses butonuna tıklandı!');
+
+        if (voiceButton.classList.contains('listening')) {
+            // Durdur
+            recognition.stop();
+            voiceButton.classList.remove('listening');
+            voiceButton.querySelector('i').className = 'fas fa-microphone';
+        } else {
+            // Başlat
+            try {
+                recognition.start();
+                voiceButton.classList.add('listening');
+                voiceButton.querySelector('i').className = 'fas fa-microphone-slash';
+                console.log('Ses tanıma başlatıldı');
+            } catch (err) {
+                console.error('Ses tanıma başlatılamadı:', err);
+                alert('Ses tanıma başlatılamadı: ' + err.message);
+            }
+        }
+    });
+});
+
+🗂 Dosya: frontend\templates\index.html
+---------------------------------------
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ankara Gezi Uygulaması</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toast.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Sohbetlerim</h2>
+                <button id="new-chat-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Sohbet
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="conversations-list" id="conversations-list">
+                    <!-- Sohbetler buraya JavaScript ile eklenecek -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span>{{ current_user.username }}</span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn btn-icon" title="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
+        <button id="toggle-sidebar" class="toggle-sidebar-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='img/1.jpeg') }}" alt="Logo" class="logo">
+                    <h1 class="app-title">Ankara Gezi Uygulaması</h1>
+                </div>
+
+                <div class="header-controls">
+                    <button class="settings-btn" id="open-preferences-modal" title="Tercihlerini Düzenle">
+                        <i class="fas fa-cog"></i>
+                    </button>
+
+                    <div class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <main class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="welcome-message">
+                        <h2>Ankara'yı Keşfedin! 🌟</h2>
+                        <p>Merhaba, ben kişisel Ankara Gezi Rehberinizim! 🗺️ Tercihlerinize göre özel gezi rotaları oluşturabilirim.</p>
+                        <ul>
+                            <li>🗺️ <strong>Kişiselleştirilmiş Rotalar</strong> - "Yarın Ankara'da ne yapmalıyım?" gibi sorular sorabilirsiniz.</li>
+                            <li>🍽️ <strong>Restoran Önerileri</strong> - "Ankara'da en iyi kebapçılar nerede?" diye sorabilirsiniz.</li>
+                            <li>🏛️ <strong>Turistik Yerler</strong> - "Ankara'da mutlaka görülmesi gereken yerler" diyebilirsiniz.</li>
+                            <li>🎭 <strong>Etkinlik Önerileri</strong> - "Bu hafta sonu Ankara'da hangi etkinlikler var?" diye sorabilirsiniz.</li>
+                            <li>⏱️ <strong>Zaman Kısıtlı Rotalar</strong> - "Ankara'da 3 saatte neler yapabilirim?" şeklinde sorabilirsiniz.</li>
+                        </ul>
+                        <p>Sağ üstteki ⚙️ ayarlar butonundan tercihlerinizi güncelleyerek daha kişiselleştirilmiş öneriler alabilirsiniz!</p>
+                        <p>Ne tür bir Ankara gezi rotası oluşturmamı istersiniz? 🤔</p>
+                    </div>
+                </div>
+
+                <div class="typing-indicator hidden" id="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+
+                <div class="chat-input">
+                    <form id="message-form">
+                        <input type="text" id="user-input" placeholder="Mesajınızı yazın..." autocomplete="off">
+                        <button type="button" id="voice-button" class="btn btn-icon" title="Sesli Mesaj">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button type="submit" id="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- User Preferences Modal -->
+    <div id="preferences-modal" class="modal-overlay modal-hidden">
+        <div class="preferences-modal">
+            <div class="modal-header">
+                <h2>Gezi Tercihleriniz</h2>
+                <button class="close-modal" id="close-preferences-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-content">
+                <!-- Bütçe -->
+                <div class="preference-section">
+                    <h3>Bütçe (ortalama kaç lira harcayabilirsiniz?)</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="budget" data-value="low">
+                            <div class="icon"><i class="fas fa-coins"></i></div>
+                            <div>Düşük (0-500₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="medium">
+                            <div class="icon"><i class="fas fa-money-bill"></i></div>
+                            <div>Orta (500-2000₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="high">
+                            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div>Yüksek (2000₺+)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kişi Sayısı -->
+                <div class="preference-section">
+                    <h3>Kiminle Geziyorsunuz?</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="company" data-value="alone">
+                            <div class="icon"><i class="fas fa-user"></i></div>
+                            <div>Yalnız</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="family">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div>Aile</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="friends">
+                            <div class="icon"><i class="fas fa-user-friends"></i></div>
+                            <div>Arkadaşlar</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="partner">
+                            <div class="icon"><i class="fas fa-heart"></i></div>
+                            <div>Sevgili</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kıyafet Tercihi -->
+                <div class="preference-section">
+                    <h3>Kıyafet Tercihi</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="dress" data-value="casual">
+                            <div class="icon"><i class="fas fa-tshirt"></i></div>
+                            <div>Günlük</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="sport">
+                            <div class="icon"><i class="fas fa-running"></i></div>
+                            <div>Spor</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="elegant">
+                            <div class="icon"><i class="fas fa-user-tie"></i></div>
+                            <div>Şık</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ruh Hali -->
+                <div class="preference-section">
+                    <h3>Mod (Ruh Hali)</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="mood" data-value="energetic">
+                            <div class="icon"><i class="fas fa-bolt"></i></div>
+                            <div>Enerjik</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="tired">
+                            <div class="icon"><i class="fas fa-bed"></i></div>
+                            <div>Yorgun</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="calm">
+                            <div class="icon"><i class="fas fa-smile"></i></div>
+                            <div>Sakin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zaman -->
+                <div class="preference-section">
+                    <h3>Zaman</h3>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="time" data-value="0-3">
+                            <div class="icon"><i class="fas fa-hourglass-start"></i></div>
+                            <div>0-3 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="3-6">
+                            <div class="icon"><i class="fas fa-hourglass-half"></i></div>
+                            <div>3-6 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="6-10">
+                            <div class="icon"><i class="fas fa-hourglass-end"></i></div>
+                            <div>6-10 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="10+">
+                            <div class="icon"><i class="fas fa-hourglass"></i></div>
+                            <div>10+ Saat</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İlgi Alanları -->
+                <div class="preference-section">
+                    <h3>İlgi Alanları (Birden fazla seçebilirsiniz)</h3>
+                    <div class="interest-tags">
+                        <span class="interest-tag" data-interest="food">Yeme & İçme</span>
+                        <span class="interest-tag" data-interest="shopping">Alışveriş</span>
+                        <span class="interest-tag" data-interest="nature">Doğa</span>
+                        <span class="interest-tag" data-interest="sports">Spor</span>
+                        <span class="interest-tag" data-interest="theater">Tiyatro</span>
+                        <span class="interest-tag" data-interest="cinema">Sinema</span>
+                        <span class="interest-tag" data-interest="concert">Konser</span>
+                        <span class="interest-tag" data-interest="museum">Müze</span>
+                        <span class="interest-tag" data-interest="comedy">Komedi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="reset-preferences" class="btn btn-secondary">Sıfırla</button>
+                <button id="save-preferences" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zorunlu Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-overlay hidden">
+        <div class="onboarding-modal">
+            <div class="onboarding-header">
+                <h2>Gezi Tercihlerinizi Belirleyin</h2>
+                <p>Size özel Ankara gezi rotası oluşturabilmemiz için lütfen tercihlerinizi belirtin.</p>
+            </div>
+
+            <div class="onboarding-content">
+                <div class="onboarding-step" data-step="1">
+                    <h3>1. Bütçenizi Belirleyin</h3>
+                    <p>Ne kadar harcamayı planlıyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="budget" data-value="low">
+                            <div class="icon"><i class="fas fa-coins"></i></div>
+                            <div>Düşük (0-500₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="medium">
+                            <div class="icon"><i class="fas fa-money-bill"></i></div>
+                            <div>Orta (500-2000₺)</div>
+                        </div>
+                        <div class="option-card" data-preference="budget" data-value="high">
+                            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div>Yüksek (2000₺+)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="2">
+                    <h3>2. Kiminle Geziyorsunuz?</h3>
+                    <p>Kimle birlikte olacaksınız?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="company" data-value="alone">
+                            <div class="icon"><i class="fas fa-user"></i></div>
+                            <div>Yalnız</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="family">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div>Aile</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="friends">
+                            <div class="icon"><i class="fas fa-user-friends"></i></div>
+                            <div>Arkadaşlar</div>
+                        </div>
+                        <div class="option-card" data-preference="company" data-value="partner">
+                            <div class="icon"><i class="fas fa-heart"></i></div>
+                            <div>Sevgili</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="3">
+                    <h3>3. Kıyafet Tercihiniz</h3>
+                    <p>Nasıl giyinmeyi planlıyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="dress" data-value="casual">
+                            <div class="icon"><i class="fas fa-tshirt"></i></div>
+                            <div>Günlük</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="sport">
+                            <div class="icon"><i class="fas fa-running"></i></div>
+                            <div>Spor</div>
+                        </div>
+                        <div class="option-card" data-preference="dress" data-value="elegant">
+                            <div class="icon"><i class="fas fa-user-tie"></i></div>
+                            <div>Şık</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="4">
+                    <h3>4. Mod (Ruh Hali)</h3>
+                    <p>Kendinizi nasıl hissediyorsunuz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="mood" data-value="energetic">
+                            <div class="icon"><i class="fas fa-bolt"></i></div>
+                            <div>Enerjik</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="tired">
+                            <div class="icon"><i class="fas fa-bed"></i></div>
+                            <div>Yorgun</div>
+                        </div>
+                        <div class="option-card" data-preference="mood" data-value="calm">
+                            <div class="icon"><i class="fas fa-smile"></i></div>
+                            <div>Sakin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="5">
+                    <h3>5. Gezi İçin Ayırdığınız Zaman</h3>
+                    <p>Ne kadar süre ayırabilirsiniz?</p>
+                    <div class="options-grid">
+                        <div class="option-card" data-preference="time" data-value="0-3">
+                            <div class="icon"><i class="fas fa-hourglass-start"></i></div>
+                            <div>0-3 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="3-6">
+                            <div class="icon"><i class="fas fa-hourglass-half"></i></div>
+                            <div>3-6 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="6-10">
+                            <div class="icon"><i class="fas fa-hourglass-end"></i></div>
+                            <div>6-10 Saat</div>
+                        </div>
+                        <div class="option-card" data-preference="time" data-value="10+">
+                            <div class="icon"><i class="fas fa-hourglass"></i></div>
+                            <div>10+ Saat</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-step hidden" data-step="6">
+                    <h3>6. İlgi Alanlarınız</h3>
+                    <p>İlgilendiğiniz aktiviteleri seçin (birden fazla seçebilirsiniz)</p>
+                    <div class="interest-tags">
+                        <span class="interest-tag" data-interest="food">Yeme & İçme</span>
+                        <span class="interest-tag" data-interest="shopping">Alışveriş</span>
+                        <span class="interest-tag" data-interest="nature">Doğa</span>
+                        <span class="interest-tag" data-interest="sports">Spor</span>
+                        <span class="interest-tag" data-interest="theater">Tiyatro</span>
+                        <span class="interest-tag" data-interest="cinema">Sinema</span>
+                        <span class="interest-tag" data-interest="concert">Konser</span>
+                        <span class="interest-tag" data-interest="museum">Müze</span>
+                        <span class="interest-tag" data-interest="comedy">Komedi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="onboarding-footer">
+                <div class="onboarding-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 16.6%;"></div>
+                    </div>
+                    <div class="progress-text">Adım 1/6</div>
+                </div>
+                <div class="onboarding-buttons">
+                    <button id="prev-step" class="btn btn-secondary" disabled>Geri</button>
+                    <button id="next-step" class="btn btn-primary">İleri</button>
+                    <button id="finish-onboarding" class="btn btn-success hidden">Tamamla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal (dinamik olarak JavaScript ile oluşturulacak) -->
+
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7q7Foqk48QL4xq6XcG99MQaapzidje5Y&callback=Function.prototype"></script>
+
+    <!-- Application Scripts -->
+    <script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/preferences.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/speech.js') }}"></script>
+
+</body>
+</html>
+
+🗂 Dosya: frontend\templates\login.html
+---------------------------------------
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş - Ankara Gezi Uygulaması</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logo" class="auth-logo">
+                <h1>Ankara Gezi Uygulaması</h1>
+            </div>
+
+            <h2>Giriş Yap</h2>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-error">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Giriş Yap</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Hesabınız yok mu? <a href="{{ url_for('register') }}">Kayıt Ol</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+🗂 Dosya: frontend\templates\register.html
+------------------------------------------
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Ankara Gezi Uygulaması</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logo" class="auth-logo">
+                <h1>Ankara Gezi Uygulaması</h1>
+            </div>
+
+            <h2>Hesap Oluştur</h2>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-error">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-posta</label>
+                    <input type="email" id="email" name="email" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Zaten hesabınız var mı? <a href="{{ url_for('login') }}">Giriş Yap</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
